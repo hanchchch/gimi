@@ -16,21 +16,18 @@ func main() {
 		Cmd:   []string{"echo", "hello world"},
 	})
 
-	c.Start()
-	_, err := c.Wait(10 * time.Second)
-	if err != nil {
+	if err := c.Run(10 * time.Second); err != nil {
 		panic(err)
 	}
 
-	out, err := c.Log()
+	out, err := c.Logs()
 	if err != nil {
 		panic(err)
 	}
 
 	io.Copy(os.Stdout, out)
 
-	err = m.RemoveContainer(c)
-	if err != nil {
+	if err := m.RemoveContainer(c); err != nil {
 		panic(err)
 	}
 }

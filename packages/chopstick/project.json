@@ -7,13 +7,13 @@
       "executor": "@nx-go/nx-go:build",
       "options": {
         "outputPath": "dist/packages/chopstick",
-        "main": "packages/chopstick/cmd/main.go"
+        "main": "packages/chopstick/cmd/chopstick.go"
       }
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "packages/chopstick/cmd/main.go"
+        "main": "packages/chopstick/cmd/chopstick.go"
       }
     },
     "test": {
