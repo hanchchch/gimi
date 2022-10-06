@@ -33,6 +33,7 @@ func (c *Container) Wait(timeout time.Duration) (container.ContainerWaitOKBody, 
 		case body := <-statusCh:
 			return body, nil
 		case <-timer.C:
+			c.Stop()
 			return container.ContainerWaitOKBody{}, fmt.Errorf("timeout waiting for container %s", c.ID)
 		}
 	} else {
@@ -49,9 +50,18 @@ func (c *Container) Stop() error {
 	return c.manager.docker.ContainerStop(context.Background(), c.ID, nil)
 }
 
-func (c *Container) Log() (io.ReadCloser, error) {
+func (c *Container) Logs() (io.ReadCloser, error) {
 	return c.manager.docker.ContainerLogs(context.Background(), c.ID, types.ContainerLogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
 	})
+}
+
+func (c *Container) Run(timeout time.Duration) error {
+	if err := c.Start(); err != nil {
+		return err
+	}
+
+	_, err := c.Wait(timeout)
+	return err
 }
