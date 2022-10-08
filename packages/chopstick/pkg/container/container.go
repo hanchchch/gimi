@@ -1,13 +1,14 @@
 package container
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/pkg/stdcopy"
 )
 
 type Container struct {
@@ -50,11 +51,19 @@ func (c *Container) Stop() error {
 	return c.manager.docker.ContainerStop(context.Background(), c.ID, nil)
 }
 
-func (c *Container) Logs() (io.ReadCloser, error) {
-	return c.manager.docker.ContainerLogs(context.Background(), c.ID, types.ContainerLogsOptions{
+func (c *Container) Logs() ([]byte, []byte, error) {
+	r, err := c.manager.docker.ContainerLogs(context.Background(), c.ID, types.ContainerLogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
 	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	stdout := new(bytes.Buffer)
+	stderr := new(bytes.Buffer)
+	stdcopy.StdCopy(stdout, stderr, r)
+	return stdout.Bytes(), stderr.Bytes(), nil
 }
 
 func (c *Container) Run(timeout time.Duration) error {

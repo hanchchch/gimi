@@ -11,10 +11,35 @@ import (
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
 )
 
+const TryImageName = "gimi-try"
+
 type Manager struct {
 	docker     *client.Client
 	containers map[string]*Container
 	namespace  string
+}
+
+type ContainerConfig struct {
+	AttachStdin  bool
+	AttachStdout bool
+	AttachStderr bool
+	StopTimeout  *int
+	Env          []string
+	Cmd          []string
+	Image        string
+}
+
+type TryContainerArgs struct {
+	Url string
+}
+
+type TryContainerConfig struct {
+	AttachStdin  bool
+	AttachStdout bool
+	AttachStderr bool
+	StopTimeout  *int
+	Env          []string
+	Args         TryContainerArgs
 }
 
 func NewManager() *Manager {
@@ -34,8 +59,16 @@ func (m *Manager) PullImage(refStr string) (io.ReadCloser, error) {
 	return m.docker.ImagePull(context.Background(), refStr, types.ImagePullOptions{})
 }
 
-func (m *Manager) CreateContainer(config *container.Config) *Container {
-	resp, err := m.docker.ContainerCreate(context.Background(), config, nil, nil, nil, m.namespace+"_"+utils.RandString(12))
+func (m *Manager) CreateContainer(config *ContainerConfig) *Container {
+	resp, err := m.docker.ContainerCreate(context.Background(), &container.Config{
+		AttachStdin:  config.AttachStdin,
+		AttachStdout: config.AttachStdout,
+		AttachStderr: config.AttachStderr,
+		Env:          config.Env,
+		Cmd:          config.Cmd,
+		StopTimeout:  config.StopTimeout,
+		Image:        config.Image,
+	}, nil, nil, nil, m.namespace+"_"+utils.RandString(12))
 	if err != nil {
 		panic(err)
 	}
@@ -48,6 +81,18 @@ func (m *Manager) CreateContainer(config *container.Config) *Container {
 	m.containers[c.ID] = c
 
 	return c
+}
+
+func (m *Manager) CreateTryContainer(config *TryContainerConfig) *Container {
+	return m.CreateContainer(&ContainerConfig{
+		AttachStdin:  config.AttachStdin,
+		AttachStdout: config.AttachStdout,
+		AttachStderr: config.AttachStderr,
+		Env:          config.Env,
+		Image:        TryImageName,
+		Cmd:          []string{"try", "-url", config.Args.Url},
+		StopTimeout:  config.StopTimeout,
+	})
 }
 
 func (m *Manager) RemoveContainer(c *Container) error {

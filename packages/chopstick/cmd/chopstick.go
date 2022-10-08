@@ -1,33 +1,40 @@
 package main
 
 import (
-	"io"
-	"os"
 	"time"
 
-	dc "github.com/docker/docker/api/types/container"
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
+	"github.com/hanchchch/gimi/packages/chopstick/pkg/listener"
 )
 
 func main() {
-	m := container.NewManager()
-	c := m.CreateContainer(&dc.Config{
-		Image: "gimi-try",
-		Cmd:   []string{"try", "-url", "https://www.google.com"},
+	l := listener.NewListener(listener.ListenerOptions{
+		HTTP: listener.HTTPListenerOptions{
+			Addr: ":8080",
+		},
 	})
 
-	if err := c.Run(10 * time.Second); err != nil {
-		panic(err)
-	}
+	l.OnInvoke(func() (interface{}, error) {
+		m := container.NewManager()
+		c := m.CreateTryContainer(&container.TryContainerConfig{
+			Args: container.TryContainerArgs{Url: "https://www.google.com"},
+		})
 
-	out, err := c.Logs()
-	if err != nil {
-		panic(err)
-	}
+		if err := c.Run(10 * time.Second); err != nil {
+			return nil, err
+		}
 
-	io.Copy(os.Stdout, out)
+		stdout, stderr, err := c.Logs()
+		if err != nil {
+			return nil, err
+		}
 
-	if err := m.RemoveContainer(c); err != nil {
-		panic(err)
-	}
+		if err := m.RemoveContainer(c); err != nil {
+			return nil, err
+		}
+
+		return map[string]string{"stdout": string(stdout), "stderr": string(stderr)}, nil
+	})
+
+	l.Listen()
 }

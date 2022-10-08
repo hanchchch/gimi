@@ -1,13 +1,9 @@
 package container
 
 import (
-	"io"
-	"os"
 	"strings"
 	"testing"
 	"time"
-
-	dc "github.com/docker/docker/api/types/container"
 )
 
 func contains(s []string, substr string) bool {
@@ -21,10 +17,10 @@ func contains(s []string, substr string) bool {
 
 func TestContainerCreateRemove(t *testing.T) {
 	m := NewManager()
-	c1 := m.CreateContainer(&dc.Config{
+	c1 := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
-	c2 := m.CreateContainer(&dc.Config{
+	c2 := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
 
@@ -84,7 +80,7 @@ func TestContainerCreateRemove(t *testing.T) {
 
 func TestContainerRun(t *testing.T) {
 	m := NewManager()
-	c := m.CreateContainer(&dc.Config{
+	c := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
 
@@ -99,7 +95,7 @@ func TestContainerRun(t *testing.T) {
 
 func TestContainerLog(t *testing.T) {
 	m := NewManager()
-	c := m.CreateContainer(&dc.Config{
+	c := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 		Cmd:   []string{"echo", "hello world"},
 	})
@@ -108,12 +104,10 @@ func TestContainerLog(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	out, err := c.Logs()
+	_, _, err := c.Logs()
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	io.Copy(os.Stdout, out)
 
 	if err := m.RemoveContainer(c); err != nil {
 		panic(err)
