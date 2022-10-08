@@ -12,8 +12,8 @@ import (
 func main() {
 	m := container.NewManager()
 	c := m.CreateContainer(&dc.Config{
-		Image: "alpine",
-		Cmd:   []string{"echo", "hello world"},
+		Image: "gimi-try",
+		Cmd:   []string{"try", "-url", "https://www.google.com"},
 	})
 
 	if err := c.Run(10 * time.Second); err != nil {

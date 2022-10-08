@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "chopstick": "packages/chopstick"
+    "chopstick": "packages/chopstick",
+    "try": "packages/try"
   }
 }

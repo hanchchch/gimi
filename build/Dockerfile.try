@@ -1,0 +1,15 @@
+FROM golang:1.17-alpine as build
+WORKDIR /app
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
+COPY packages /app/packages
+RUN go build -o /app/try /app/packages/try/cmd/try.go
+
+FROM golang:1.17-alpine as runtime
+
+COPY --from=build /app/try /bin/try
+
+CMD [ "/app/try" ]
