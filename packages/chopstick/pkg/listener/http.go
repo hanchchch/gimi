@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
+	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
 )
 
 type HTTPListener struct {
@@ -30,10 +33,14 @@ func (l *HTTPListener) Listen() error {
 
 func (l *HTTPListener) OnInvoke(callback HandlerFunc) error {
 	l.router.HandleFunc("/invoke", logging(func(w http.ResponseWriter, req *http.Request) {
-		data, err := callback()
+		var args container.TryArgs
+		if err := json.NewDecoder(req.Body).Decode(&args); err != nil {
+			http.Error(w, utils.ErrorJsonString(err), http.StatusBadRequest)
+			return
+		}
+		data, err := callback(args)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
+			http.Error(w, utils.ErrorJsonString(err), http.StatusInternalServerError)
 			return
 		}
 		body, _ := json.Marshal(data)

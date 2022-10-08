@@ -11,7 +11,14 @@ import (
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
 )
 
-const TryImageName = "gimi-try"
+const (
+	TryImageName     = "gimi-try"
+	ManagerNamespace = "chopstick"
+)
+
+type TryArgs struct {
+	Url string `json:"url"`
+}
 
 type Manager struct {
 	docker     *client.Client
@@ -29,17 +36,13 @@ type ContainerConfig struct {
 	Image        string
 }
 
-type TryContainerArgs struct {
-	Url string
-}
-
 type TryContainerConfig struct {
 	AttachStdin  bool
 	AttachStdout bool
 	AttachStderr bool
 	StopTimeout  *int
 	Env          []string
-	Args         TryContainerArgs
+	Args         TryArgs
 }
 
 func NewManager() *Manager {
@@ -51,7 +54,7 @@ func NewManager() *Manager {
 	return &Manager{
 		docker:     cli,
 		containers: make(map[string]*Container),
-		namespace:  "chopstick",
+		namespace:  ManagerNamespace,
 	}
 }
 

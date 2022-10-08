@@ -14,10 +14,10 @@ func main() {
 		},
 	})
 
-	l.OnInvoke(func() (interface{}, error) {
+	l.OnInvoke(func(args container.TryArgs) (interface{}, error) {
 		m := container.NewManager()
 		c := m.CreateTryContainer(&container.TryContainerConfig{
-			Args: container.TryContainerArgs{Url: "https://www.google.com"},
+			Args: args,
 		})
 
 		if err := c.Run(10 * time.Second); err != nil {
