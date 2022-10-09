@@ -10,5 +10,5 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("url: %s\n", *url)
+	fmt.Printf("url: %s", *url)
 }

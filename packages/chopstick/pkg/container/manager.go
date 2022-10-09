@@ -62,7 +62,7 @@ func (m *Manager) PullImage(refStr string) (io.ReadCloser, error) {
 	return m.docker.ImagePull(context.Background(), refStr, types.ImagePullOptions{})
 }
 
-func (m *Manager) CreateContainer(config *ContainerConfig) *Container {
+func (m *Manager) CreateContainer(config *ContainerConfig) (*Container, error) {
 	resp, err := m.docker.ContainerCreate(context.Background(), &container.Config{
 		AttachStdin:  config.AttachStdin,
 		AttachStdout: config.AttachStdout,
@@ -73,7 +73,7 @@ func (m *Manager) CreateContainer(config *ContainerConfig) *Container {
 		Image:        config.Image,
 	}, nil, nil, nil, m.namespace+"_"+utils.RandString(12))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	c := &Container{
@@ -83,10 +83,10 @@ func (m *Manager) CreateContainer(config *ContainerConfig) *Container {
 
 	m.containers[c.ID] = c
 
-	return c
+	return c, nil
 }
 
-func (m *Manager) CreateTryContainer(config *TryContainerConfig) *Container {
+func (m *Manager) CreateTryContainer(config *TryContainerConfig) (*Container, error) {
 	return m.CreateContainer(&ContainerConfig{
 		AttachStdin:  config.AttachStdin,
 		AttachStdout: config.AttachStdout,

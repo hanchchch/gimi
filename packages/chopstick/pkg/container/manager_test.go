@@ -17,10 +17,10 @@ func contains(s []string, substr string) bool {
 
 func TestContainerCreateRemove(t *testing.T) {
 	m := NewManager()
-	c1 := m.CreateContainer(&ContainerConfig{
+	c1, _ := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
-	c2 := m.CreateContainer(&ContainerConfig{
+	c2, _ := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
 
@@ -80,7 +80,7 @@ func TestContainerCreateRemove(t *testing.T) {
 
 func TestContainerRun(t *testing.T) {
 	m := NewManager()
-	c := m.CreateContainer(&ContainerConfig{
+	c, _ := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
 
@@ -95,7 +95,7 @@ func TestContainerRun(t *testing.T) {
 
 func TestContainerLog(t *testing.T) {
 	m := NewManager()
-	c := m.CreateContainer(&ContainerConfig{
+	c, _ := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 		Cmd:   []string{"echo", "hello world"},
 	})
