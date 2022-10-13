@@ -93,7 +93,7 @@ func (m *Manager) CreateTryContainer(config *TryContainerConfig) (*Container, er
 		AttachStderr: config.AttachStderr,
 		Env:          config.Env,
 		Image:        TryImageName,
-		Cmd:          []string{"try", "-url", config.Args.Url},
+		Cmd:          []string{"inspection", "-url", config.Args.Url},
 		StopTimeout:  config.StopTimeout,
 	})
 }
