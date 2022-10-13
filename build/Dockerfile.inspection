@@ -6,10 +6,10 @@ COPY go.sum .
 RUN go mod download
 
 COPY packages /app/packages
-RUN go build -o /app/try /app/packages/try/cmd/try.go
+RUN go build -o /app/inspection /app/packages/inspection/cmd/inspection.go
 
 FROM golang:1.17-alpine as runtime
 
-COPY --from=build /app/try /bin/try
+COPY --from=build /app/inspection /bin/inspection
 
-CMD [ "/bin/try" ]
+CMD [ "/bin/inspection" ]

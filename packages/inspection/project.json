@@ -1,19 +1,19 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "packages/try",
+  "sourceRoot": "packages/inspection",
   "targets": {
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "outputPath": "dist/packages/try",
-        "main": "packages/try/cmd/try.go"
+        "outputPath": "dist/packages/inspection",
+        "main": "packages/inspection/cmd/inspection.go"
       }
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "packages/try/cmd/try.go"
+        "main": "packages/inspection/cmd/inspection.go"
       }
     },
     "test": {

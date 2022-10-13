@@ -17,7 +17,7 @@ func main() {
 		},
 	})
 
-	l.OnInvoke(func(args container.TryArgs) (interface{}, error) {
+	l.OnInvoke(func(args container.InspectionArgs) (interface{}, error) {
 		c, err := m.CreateTryContainer(&container.TryContainerConfig{
 			Args: args,
 		})

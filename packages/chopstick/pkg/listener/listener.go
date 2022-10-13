@@ -4,7 +4,7 @@ import (
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
 )
 
-type HandlerFunc func(container.TryArgs) (interface{}, error)
+type HandlerFunc func(container.InspectionArgs) (interface{}, error)
 
 type Listener interface {
 	Listen() error

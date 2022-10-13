@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	TryImageName     = "gimi-try"
+	TryImageName     = "gimi-inspection"
 	ManagerNamespace = "chopstick"
 )
 
-type TryArgs struct {
+type InspectionArgs struct {
 	Url string `json:"url"`
 }
 
@@ -42,7 +42,7 @@ type TryContainerConfig struct {
 	AttachStderr bool
 	StopTimeout  *int
 	Env          []string
-	Args         TryArgs
+	Args         InspectionArgs
 }
 
 func NewManager() *Manager {

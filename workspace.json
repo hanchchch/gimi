@@ -3,6 +3,6 @@
   "version": 2,
   "projects": {
     "chopstick": "packages/chopstick",
-    "try": "packages/try"
+    "inspection": "packages/inspection"
   }
 }

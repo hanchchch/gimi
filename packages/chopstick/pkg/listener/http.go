@@ -33,7 +33,7 @@ func (l *HTTPListener) Listen() error {
 
 func (l *HTTPListener) OnInvoke(callback HandlerFunc) error {
 	l.router.HandleFunc("/invoke", logging(func(w http.ResponseWriter, req *http.Request) {
-		var args container.TryArgs
+		var args container.InspectionArgs
 		if err := json.NewDecoder(req.Body).Decode(&args); err != nil {
 			http.Error(w, utils.ErrorJsonString(err), http.StatusBadRequest)
 			return
