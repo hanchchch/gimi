@@ -5,14 +5,22 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"runtime"
+	"strings"
+	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
 )
 
+const keyPrefix = "gimi:inspection:"
+
 type RedisListener struct {
-	url      string
-	callback HandlerFunc
-	redis    *redis.Client
+	id        string
+	url       string
+	callback  HandlerFunc
+	redis     *redis.Client
+	keyPrefix string
 }
 
 type RedisListenerOptions struct {
@@ -26,16 +34,37 @@ func NewRedisListener(options RedisListenerOptions) (*RedisListener, error) {
 	}
 
 	return &RedisListener{
-		url:   options.Url,
-		redis: redis.NewClient(opt),
+		id:        uuid.New().String(),
+		url:       options.Url,
+		redis:     redis.NewClient(opt),
+		keyPrefix: keyPrefix,
 	}, nil
+}
+
+func (l *RedisListener) buildKey(keys ...string) string {
+	return l.keyPrefix + strings.Join(keys, ":")
+}
+
+func (l *RedisListener) ListenerKey() string {
+	return l.buildKey("listener", runtime.GOOS, l.id)
+}
+func (l *RedisListener) QueueKey() string {
+	return l.buildKey("request", runtime.GOOS)
+}
+
+func (l *RedisListener) KeepListenerKey() error {
+	for {
+		l.redis.SetEX(context.Background(), l.ListenerKey(), "OK", 3*time.Second)
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func (l *RedisListener) Listen() error {
 	log.Println("Listening to", l.url)
+	go l.KeepListenerKey()
 	for {
 		ctx := context.Background()
-		cmd := l.redis.BRPop(ctx, 0, "gimi:inspection:queue")
+		cmd := l.redis.BRPop(ctx, 0, l.QueueKey())
 		if cmd.Err() != nil {
 			log.Printf("error while brpop: %v", cmd.Err())
 			continue
@@ -55,7 +84,7 @@ func (l *RedisListener) Listen() error {
 		}
 
 		resp, _ := json.Marshal(data)
-		_, err = l.redis.LPush(ctx, "gimi:inspection:results", resp).Result()
+		_, err = l.redis.LPush(ctx, l.buildKey("results"), resp).Result()
 		if err != nil {
 			log.Printf("error while lpush: %v", err)
 			continue
