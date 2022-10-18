@@ -7,17 +7,23 @@ import (
 
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
 	"github.com/hanchchch/gimi/packages/chopstick/pkg/listener"
+	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	m := container.NewManager()
+	err := godotenv.Load()
+	if err == nil {
+		fmt.Println("loading .env file")
+	}
 
 	listeners, err := listener.NewListeners(listener.ListenerOptions{
 		HTTP: listener.HTTPListenerOptions{
-			Addr: ":8080",
+			Addr: utils.Getenv("HTTP_ADDR", ""),
 		},
 		Redis: listener.RedisListenerOptions{
-			Url: "redis://localhost:6379",
+			Url: utils.Getenv("REDIS_URL", ""),
 		},
 	})
 

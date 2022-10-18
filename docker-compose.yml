@@ -6,3 +6,15 @@ services:
     ports:
       - "6379:6379"
    
+  chopstick:
+    build:
+      dockerfile: build/Dockerfile.chopstick
+      context: .
+    ports:
+      - "8080:8080"
+    privileged: true
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - HTTP_ADDR=:8080
+    links:
+      - redis
