@@ -6,9 +6,9 @@ services:
     ports:
       - "6379:6379"
    
-  chopstick:
+  chopstick-ubuntu:
     build:
-      dockerfile: build/Dockerfile.chopstick
+      dockerfile: build/Dockerfile.chopstick-ubuntu
       context: .
     ports:
       - "8080:8080"

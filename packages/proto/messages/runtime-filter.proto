@@ -1,0 +1,17 @@
+syntax = "proto3";
+package chopstick;
+
+
+service RuntimeFilterService {
+  rpc RuntimeFilter(RuntimeFilterRequest) returns (RuntimeFilterResponse) {}
+}
+
+message RuntimeFilterRequest {
+  string url = 1;
+}
+
+message RuntimeFilterResponse {
+  string url = 1;
+  string stdout = 2;
+  string stderr = 3;
+}

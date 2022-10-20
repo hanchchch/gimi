@@ -3,6 +3,8 @@
   "version": 2,
   "projects": {
     "chopstick": "packages/chopstick",
-    "inspection": "packages/inspection"
+    "inspection": "packages/inspection",
+    "proto": "packages/proto",
+    "runtime-filter": "packages/runtime-filter"
   }
 }
