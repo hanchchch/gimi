@@ -6,7 +6,7 @@ import {
   GetResultResponse,
   StartRequest,
   StartResponse,
-} from './app.interface';
+} from '@proto/nestjs/runtimefilter.interface';
 import { AppService } from './app.service';
 
 @Controller()

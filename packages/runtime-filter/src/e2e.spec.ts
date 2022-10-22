@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ClientGrpc, ClientsModule } from '@nestjs/microservices';
-import { createClientOptions } from './grpc-client.options';
+import { createClientOptions } from '@proto/nestjs/runtimefilter.options';
 import { AppModule } from './app/app.module';
 import {
   GetResultRequest,
   StartRequest,
   RuntimeFilterService,
-} from './app/app.interface';
+} from '@proto/nestjs/runtimefilter.interface';
 import { firstValueFrom } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
@@ -83,7 +83,6 @@ describe('App', () => {
     await app.listen();
 
     clientApp = await NestFactory.create(TestClientModule);
-    clientApp.connectMicroservice(clientOptions);
     await clientApp.init();
   });
 

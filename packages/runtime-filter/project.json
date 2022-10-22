@@ -6,8 +6,9 @@
     "bundle": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
+        "cwd": "packages/runtime-filter",
         "outputPath": "dist/packages/runtime-filter/index.js",
-        "command": "ncc build packages/runtime-filter/src/main.ts -m -o dist/packages/runtime-filter"
+        "command": "ncc build src/main.ts -o ../../dist/packages/runtime-filter"
       }
     },
     "build": {

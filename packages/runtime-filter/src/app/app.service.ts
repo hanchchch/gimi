@@ -1,15 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { InjectQueue } from '../queue/queue.decorators';
-import { QueueService } from '../queue/queue.service';
 import {
   GetResultRequest,
   GetResultResponse,
-  HandlerArgs,
-  HandlerResult,
   StartRequest,
   StartResponse,
-} from './app.interface';
+} from '@proto/nestjs/runtimefilter.interface';
+import { InjectQueue } from '../queue/queue.decorators';
+import { QueueService } from '../queue/queue.service';
+import { HandlerArgs, HandlerResult } from './app.interface';
 
 @Injectable()
 export class AppService {

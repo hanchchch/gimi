@@ -16,11 +16,7 @@ RUN npx nx bundle runtime-filter
 FROM node:14-alpine
 WORKDIR /app
 
-COPY --from=builder /app/dist/packages/runtime-filter/index.js ./index.js
-COPY packages/proto/messages/runtimefilter.proto ./runtimefilter.proto
+COPY --from=builder /app/dist/packages/runtime-filter ./dist/packages/runtime-filter
+COPY packages/proto/messages ./packages/proto/messages
 
-ENV PROTO_PATH runtimefilter.proto
-ENV PORT 50051
-EXPOSE 50051
-
-ENTRYPOINT [ "node", "./index.js" ]
+ENTRYPOINT [ "node", "./dist/packages/runtime-filter/index.js" ]

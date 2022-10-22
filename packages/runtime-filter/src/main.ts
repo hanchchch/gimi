@@ -1,17 +1,24 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
-import { createClientOptions } from './grpc-client.options';
-import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
+import { createClientOptions } from '@proto/nestjs/runtimefilter.options';
+
+import { AppModule } from './app/app.module';
 import { EnvVars } from './environments/environment.interface';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {});
   const config: ConfigService<EnvVars> = app.get(ConfigService);
   const options = createClientOptions({
-    port: config.get('PORT'),
-    protoPath: config.get('PROTO_PATH'),
+    url: `0.0.0.0:${config.get('PORT', 50051)}`,
+    protoPath: join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'packages/proto/messages/runtimefilter.proto'
+    ),
   });
 
   app.connectMicroservice(options);
