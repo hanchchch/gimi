@@ -12,13 +12,6 @@ async function bootstrap() {
   const config: ConfigService<EnvVars> = app.get(ConfigService);
   const options = createClientOptions({
     url: `0.0.0.0:${config.get('PORT', 50051)}`,
-    protoPath: join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'packages/proto/messages/runtimefilter.proto'
-    ),
   });
 
   app.connectMicroservice(options);

@@ -1,0 +1,22 @@
+FROM node:14 AS builder
+
+WORKDIR /app
+
+RUN yarn global add @vercel/ncc
+
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
+
+COPY *.json ./
+COPY ./packages/ ./packages/
+
+RUN npx nx bundle controller
+
+FROM node:14-alpine
+WORKDIR /app
+
+COPY --from=builder /app/dist/packages/controller ./dist/packages/controller
+COPY packages/proto/messages ./packages/proto/messages
+
+ENTRYPOINT [ "node", "./dist/packages/controller/index.js" ]

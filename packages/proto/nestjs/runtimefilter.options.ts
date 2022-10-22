@@ -3,7 +3,13 @@ import { join } from 'path';
 
 export const createClientOptions = ({
   url = '0.0.0.0:50051',
-  protoPath = join(__dirname, '..', 'messages/runtimefilter.proto'),
+  protoPath = join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'packages/proto/messages/runtimefilter.proto'
+  ),
 }: {
   url?: string;
   protoPath?: string;

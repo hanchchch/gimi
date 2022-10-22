@@ -11,12 +11,12 @@ services:
       dockerfile: build/Dockerfile.chopstick-ubuntu
       context: .
     ports:
-      - "8080:8080"
+      - "5001:5001"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - REDIS_URL=redis://redis:6379
-      - HTTP_ADDR=:8080
+      - HTTP_ADDR=:5001
     links:
       - redis
 
@@ -27,6 +27,19 @@ services:
     ports:
       - "50051:50051"
     environment:
+      - PORT=50051
+      - HTTP_PORT=5000
       - REDIS_URL=redis://redis:6379
     links:
       - redis
+
+  controller:
+    build:
+      dockerfile: build/Dockerfile.controller
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    links:
+      - runtime-filter
