@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ClientGrpc, ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions } from './grpc-client.options';
+import { createClientOptions } from './grpc-client.options';
 import { AppModule } from './app/app.module';
 import {
   GetResultRequest,
@@ -18,6 +18,8 @@ import { firstValueFrom } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { testConfigProvider } from './environments/environment.test-env';
+
+const clientOptions = createClientOptions({});
 
 @Controller()
 class TestClientController {
@@ -53,7 +55,7 @@ class TestClientController {
     ClientsModule.register([
       {
         name: 'RUNTIME_FILTER_PACKAGE',
-        ...grpcClientOptions,
+        ...clientOptions,
       },
     ]),
   ],
@@ -73,11 +75,11 @@ describe('App', () => {
       .useValue(testConfigProvider.useValue)
       .compile();
 
-    app = moduleFixture.createNestMicroservice(grpcClientOptions);
+    app = moduleFixture.createNestMicroservice(clientOptions);
     await app.listen();
 
     clientApp = await NestFactory.create(TestClientModule);
-    clientApp.connectMicroservice(grpcClientOptions);
+    clientApp.connectMicroservice(clientOptions);
     await clientApp.init();
   });
 
