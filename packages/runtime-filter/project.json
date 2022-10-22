@@ -18,13 +18,7 @@
         "production": {
           "optimization": true,
           "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "packages/runtime-filter/src/environments/environment.ts",
-              "with": "packages/runtime-filter/src/environments/environment.prod.ts"
-            }
-          ]
+          "inspect": false
         }
       }
     },

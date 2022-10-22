@@ -1,20 +1,33 @@
 import { Metadata, ServerUnaryCall } from '@grpc/grpc-js';
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { RuntimeFilterRequest, RuntimeFilterResponse } from './app.interface';
+import {
+  GetResultRequest,
+  GetResultResponse,
+  StartRequest,
+  StartResponse,
+} from './app.interface';
+import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  @GrpcMethod('RuntimeFilterService', 'RuntimeFilter')
-  RuntimeFilter(
-    data: RuntimeFilterRequest,
+  constructor(private readonly appService: AppService) {}
+
+  @GrpcMethod('RuntimeFilterService', 'Start')
+  async Start(
+    data: StartRequest,
     metadata: Metadata,
     call: ServerUnaryCall<any, any>
-  ): RuntimeFilterResponse {
-    return {
-      url: data.url,
-      stdout: 'stdout',
-      stderr: 'stderr',
-    };
+  ): Promise<StartResponse> {
+    return this.appService.start(data);
+  }
+
+  @GrpcMethod('RuntimeFilterService', 'GetResult')
+  async GetResult(
+    data: GetResultRequest,
+    metadata: Metadata,
+    call: ServerUnaryCall<any, any>
+  ): Promise<GetResultResponse> {
+    return this.appService.getResult(data);
   }
 }

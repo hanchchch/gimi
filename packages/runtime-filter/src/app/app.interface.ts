@@ -1,16 +1,25 @@
-import { Metadata, ServerUnaryCall } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
 
-export interface RuntimeFilterRequest {
+export interface StartRequest {
   url: string;
 }
 
-export interface RuntimeFilterResponse {
+export interface StartResponse {
+  id: string;
+}
+
+export interface GetResultRequest {
+  id: string;
+}
+
+export interface GetResultResponse {
+  id: string;
   url: string;
   stdout: string;
   stderr: string;
 }
 
 export interface RuntimeFilterService {
-  RuntimeFilter(data: RuntimeFilterRequest): Observable<RuntimeFilterResponse>;
+  Start(data: StartRequest): Observable<StartResponse>;
+  GetResult(data: GetResultRequest): Observable<GetResultResponse>;
 }

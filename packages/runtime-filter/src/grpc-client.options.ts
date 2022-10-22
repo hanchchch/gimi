@@ -1,17 +1,17 @@
-import { Transport, ClientOptions } from '@nestjs/microservices';
+import { Transport, GrpcOptions } from '@nestjs/microservices';
 import { join } from 'path';
 
-export const grpcClientOptions: ClientOptions = {
+export const grpcClientOptions: GrpcOptions = {
   transport: Transport.GRPC,
   options: {
-    package: 'chopstick',
-    url: 'localhost:50051',
+    package: 'runtimefilter',
+    url: '0.0.0.0:50051',
     protoPath: join(
       __dirname,
       '..',
       '..',
       '..',
-      'packages/proto/messages/runtime-filter.proto'
+      'packages/proto/messages/runtimefilter.proto'
     ),
   },
 };

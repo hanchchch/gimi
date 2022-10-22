@@ -1,0 +1,27 @@
+syntax = "proto3";
+package runtimefilter;
+
+
+service RuntimeFilterService {
+  rpc Start(StartRequest) returns (StartResponse) {}
+  rpc GetResult(GetResultRequest) returns (GetResultResponse) {}
+}
+
+message StartRequest {
+  string url = 1;
+}
+
+message StartResponse {
+  string id = 1;
+}
+
+message GetResultRequest {
+  string id = 1;
+}
+
+message GetResultResponse {
+  string id = 1;
+  string url = 2;
+  string stdout = 3;
+  string stderr = 4;
+}

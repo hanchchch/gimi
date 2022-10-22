@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "chopstick": "packages/chopstick",
+    "controller": "packages/controller",
     "inspection": "packages/inspection",
     "proto": "packages/proto",
     "runtime-filter": "packages/runtime-filter"

@@ -10,10 +10,14 @@ import { ClientGrpc, ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from './grpc-client.options';
 import { AppModule } from './app/app.module';
 import {
-  RuntimeFilterRequest,
+  GetResultRequest,
+  StartRequest,
   RuntimeFilterService,
 } from './app/app.interface';
 import { firstValueFrom } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
+import { testConfigProvider } from './environments/environment.test-env';
 
 @Controller()
 class TestClientController {
@@ -35,8 +39,12 @@ class TestClientController {
     return this.client;
   }
 
-  runtimeFilter(data: RuntimeFilterRequest) {
-    return this.service.RuntimeFilter(data);
+  start(data: StartRequest) {
+    return this.service.Start(data);
+  }
+
+  getResult(data: GetResultRequest) {
+    return this.service.GetResult(data);
   }
 }
 
@@ -58,7 +66,14 @@ describe('App', () => {
   let clientApp: INestApplication;
 
   beforeAll(async () => {
-    app = await NestFactory.createMicroservice(AppModule, grpcClientOptions);
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(testConfigProvider.useValue)
+      .compile();
+
+    app = moduleFixture.createNestMicroservice(grpcClientOptions);
     await app.listen();
 
     clientApp = await NestFactory.create(TestClientModule);
@@ -81,16 +96,27 @@ describe('App', () => {
       expect(controller.getService()).toBeDefined();
     });
 
-    it('should be able to call rpc', async () => {
+    it('should be able to call rpc Start', async () => {
       const controller =
         clientApp.get<TestClientController>(TestClientController);
 
-      const result = await firstValueFrom(
-        controller.runtimeFilter({ url: 'url' })
-      );
+      const result = await firstValueFrom(controller.start({ url: 'url' }));
 
       expect(result).toBeDefined();
-      expect(result.url).toEqual('url');
+      expect(result.id).toBeDefined();
+    });
+
+    it('should be able to call rpc GetResult', async () => {
+      const controller =
+        clientApp.get<TestClientController>(TestClientController);
+
+      const result = await firstValueFrom(controller.getResult({ id: 'id' }));
+
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
+      expect(result.url).toBeDefined();
+      expect(result.stdout).toBeDefined();
+      expect(result.stderr).toBeDefined();
     });
   });
 });

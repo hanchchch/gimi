@@ -14,7 +14,7 @@ async function bootstrap() {
   );
 
   await app.listen();
-  Logger.log(`🚀 Application is running on`);
+  Logger.log(`🚀 Application is running on ${grpcClientOptions.options.url}`);
 }
 
 bootstrap();

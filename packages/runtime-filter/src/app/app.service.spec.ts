@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing';
+import { testConfigProvider } from '../environments/environment.test-env';
 
 import { AppService } from './app.service';
 
@@ -7,17 +8,17 @@ describe('AppService', () => {
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
-      providers: [AppService],
+      providers: [AppService, testConfigProvider],
     }).compile();
 
     service = app.get<AppService>(AppService);
   });
 
-  describe('getData', () => {
-    it('should return "Welcome to runtime-filter!"', () => {
-      expect(service.getData()).toEqual({
-        message: 'Welcome to runtime-filter!',
-      });
+  describe('start', () => {
+    it('should return request id', async () => {
+      const result = await service.start({ url: 'url' });
+      expect(result).toBeDefined();
+      expect(result.id).toBeDefined();
     });
   });
 });
