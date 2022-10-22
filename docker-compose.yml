@@ -18,3 +18,14 @@ services:
       - HTTP_ADDR=:8080
     links:
       - redis
+
+  runtime-filter:
+    build:
+      dockerfile: build/Dockerfile.runtime-filter
+      context: .
+    ports:
+      - "50051:50051"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    links:
+      - redis

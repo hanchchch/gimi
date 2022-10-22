@@ -3,6 +3,13 @@
   "sourceRoot": "packages/runtime-filter/src",
   "projectType": "application",
   "targets": {
+    "bundle": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "outputPath": "dist/packages/runtime-filter/index.js",
+        "command": "ncc build packages/runtime-filter/src/main.ts -m -o dist/packages/runtime-filter"
+      }
+    },
     "build": {
       "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
