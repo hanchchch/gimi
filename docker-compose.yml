@@ -12,7 +12,8 @@ services:
       context: .
     ports:
       - "8080:8080"
-    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - REDIS_URL=redis://redis:6379
       - HTTP_ADDR=:8080

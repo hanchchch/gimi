@@ -10,6 +10,8 @@ RUN go build -o /app/chopstick /app/packages/chopstick/cmd/chopstick.go
 
 FROM golang:1.17-alpine as runtime
 
+RUN apk add --update docker openrc
+RUN rc-update add docker boot
 COPY --from=build /app/chopstick /bin/chopstick
 
 CMD [ "/bin/chopstick" ]
