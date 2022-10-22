@@ -9,7 +9,12 @@ type HandlerArgs struct {
 	InspectionArgs container.InspectionArgs `json:"inspection_args"`
 }
 
-type HandlerFunc func(HandlerArgs) (map[string]string, error)
+type HandlerResult struct {
+	RequestId        string                     `json:"request_id"`
+	InspectionResult container.InspectionResult `json:"inspection_result"`
+}
+
+type HandlerFunc func(HandlerArgs) (*HandlerResult, error)
 
 type Listener interface {
 	Listen() error

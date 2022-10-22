@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const keyPrefix = "gimi:inspection:"
+const keyPrefix = "gimi:inspection"
 
 type RedisListener struct {
 	id        string
@@ -42,14 +42,19 @@ func NewRedisListener(options RedisListenerOptions) (*RedisListener, error) {
 }
 
 func (l *RedisListener) buildKey(keys ...string) string {
-	return l.keyPrefix + strings.Join(keys, ":")
+	return strings.Join(append([]string{l.keyPrefix}, keys...), ":")
 }
 
 func (l *RedisListener) ListenerKey() string {
 	return l.buildKey("listener", runtime.GOOS, l.id)
 }
+
 func (l *RedisListener) QueueKey() string {
 	return l.buildKey("request", runtime.GOOS)
+}
+
+func (l *RedisListener) ResultKey(requestId string) string {
+	return l.buildKey("results", requestId)
 }
 
 func (l *RedisListener) KeepListenerKey() error {
@@ -84,7 +89,7 @@ func (l *RedisListener) Listen() error {
 		}
 
 		resp, _ := json.Marshal(data)
-		_, err = l.redis.LPush(ctx, l.buildKey("results"), resp).Result()
+		_, err = l.redis.Set(ctx, l.ResultKey(args.RequestId), resp, 3*time.Hour).Result()
 		if err != nil {
 			log.Printf("error while lpush: %v", err)
 			continue

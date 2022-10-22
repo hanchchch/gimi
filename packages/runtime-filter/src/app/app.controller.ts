@@ -1,5 +1,5 @@
 import { Metadata, ServerUnaryCall } from '@grpc/grpc-js';
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   GetResultRequest,
@@ -29,5 +29,15 @@ export class AppController {
     call: ServerUnaryCall<any, any>
   ): Promise<GetResultResponse> {
     return this.appService.getResult(data);
+  }
+
+  @Post(`start`)
+  async start(@Body() params: StartRequest) {
+    return this.appService.start(params);
+  }
+
+  @Get(`result/:id`)
+  async getResult(@Param('id') id: string) {
+    return this.appService.getResult({ id });
   }
 }

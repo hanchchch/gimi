@@ -20,6 +20,12 @@ type InspectionArgs struct {
 	Url string `json:"url"`
 }
 
+type InspectionResult struct {
+	Url    string `json:"url"`
+	Stdout string `json:"stdout"`
+	Stderr string `json:"stderr"`
+}
+
 type Manager struct {
 	docker     *client.Client
 	containers map[string]*Container

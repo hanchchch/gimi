@@ -102,7 +102,9 @@ describe('App', () => {
       const controller =
         clientApp.get<TestClientController>(TestClientController);
 
-      const result = await firstValueFrom(controller.start({ url: 'url' }));
+      const result = await firstValueFrom(
+        controller.start({ os: 'linux', url: 'url' })
+      );
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();

@@ -31,7 +31,7 @@ func main() {
 		panic(err)
 	}
 
-	handler := func(args listener.HandlerArgs) (map[string]string, error) {
+	handler := func(args listener.HandlerArgs) (*listener.HandlerResult, error) {
 		c, err := m.CreateTryContainer(&container.TryContainerConfig{
 			Args: args.InspectionArgs,
 		})
@@ -52,7 +52,14 @@ func main() {
 			return nil, fmt.Errorf("failed to remove container: %w", err)
 		}
 
-		return map[string]string{"request_id": args.RequestId, "stdout": string(stdout), "stderr": string(stderr)}, nil
+		return &listener.HandlerResult{
+			RequestId: args.RequestId,
+			InspectionResult: container.InspectionResult{
+				Url:    args.InspectionArgs.Url,
+				Stdout: string(stdout),
+				Stderr: string(stderr),
+			},
+		}, nil
 	}
 
 	for _, l := range listeners {

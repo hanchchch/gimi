@@ -16,6 +16,7 @@ async function bootstrap() {
 
   app.connectMicroservice(options);
   await app.startAllMicroservices();
+  await app.listen(config.get('HTTP_PORT', 3000));
   Logger.log(`🚀 Application is running on ${options.options.url}`);
 }
 
