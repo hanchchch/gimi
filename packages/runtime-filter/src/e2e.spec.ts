@@ -18,6 +18,8 @@ import { firstValueFrom } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { testConfigProvider } from './environments/environment.test-env';
+import { QUEUE_SERVICE } from './queue/queue.symbol';
+import { MockQueueService } from './queue/mock-queue.service';
 
 const clientOptions = createClientOptions({});
 
@@ -73,6 +75,8 @@ describe('App', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(testConfigProvider.useValue)
+      .overrideProvider(QUEUE_SERVICE)
+      .useClass(MockQueueService)
       .compile();
 
     app = moduleFixture.createNestMicroservice(clientOptions);

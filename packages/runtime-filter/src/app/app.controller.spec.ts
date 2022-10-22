@@ -1,6 +1,8 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Test, TestingModule } from '@nestjs/testing';
 import { testConfigProvider } from '../environments/environment.test-env';
+import { QUEUE_SERVICE } from '../queue/queue.symbol';
+import { MockQueueService } from '../queue/mock-queue.service';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,7 +14,11 @@ describe('AppController', () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService, testConfigProvider],
+      providers: [
+        AppService,
+        testConfigProvider,
+        { provide: QUEUE_SERVICE, useClass: MockQueueService },
+      ],
     }).compile();
 
     controller = app.get<AppController>(AppController);
