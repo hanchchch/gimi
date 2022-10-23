@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { QUEUE_SERVICE } from './queue.symbol';
+import { Module } from "@nestjs/common";
+import { QUEUE_SERVICE } from "./queue.symbol";
 
-import { RedisService } from './redis.service';
+import { RedisService } from "./redis.service";
 
 @Module({
   imports: [],

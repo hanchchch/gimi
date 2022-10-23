@@ -1,27 +1,27 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createClient } from 'redis';
-import { EnvVars } from '../environments/environment.interface';
-import { QueueService } from './queue.service';
+import { Injectable, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { createClient } from "redis";
+import { EnvVars } from "../environments/environment.interface";
+import { QueueService } from "./queue.service";
 
 type RedisClient = ReturnType<typeof createClient>;
 
 @Injectable()
 export class RedisService implements OnModuleInit, QueueService {
   private redisClient: RedisClient;
-  private prefix = 'gimi:inspection';
+  private prefix = "gimi:inspection";
 
   constructor(private readonly config: ConfigService<EnvVars>) {}
 
   async onModuleInit() {
     this.redisClient = createClient({
-      url: this.config.get('REDIS_URL'),
+      url: this.config.get("REDIS_URL"),
     });
     await this.redisClient.connect();
   }
 
   buildKey(...args: string[]) {
-    return [this.prefix, ...args].join(':');
+    return [this.prefix, ...args].join(":");
   }
 
   encode<T>(data: T) {

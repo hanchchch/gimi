@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
-import { InjectRuntimeFilter } from '../runtime-filter/runtime-filter.decorators';
-import { RuntimeFilterService } from '../runtime-filter/runtime-filter.service';
-import { InspectParams } from './app.dto';
+import { Injectable } from "@nestjs/common";
+import { firstValueFrom } from "rxjs";
+import { InjectRuntimeFilter } from "../runtime-filter/runtime-filter.decorators";
+import { RuntimeFilterService } from "../runtime-filter/runtime-filter.service";
+import { InspectParams } from "./app.dto";
 
 @Injectable()
 export class AppService {

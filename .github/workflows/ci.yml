@@ -38,7 +38,7 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'main'
+          main-branch-name: "main"
 
       - run: npx nx workspace-lint
       - run: npx nx format:check
@@ -60,12 +60,12 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'main'
+          main-branch-name: "main"
 
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.17.0'
+          go-version: ">=1.17.0"
 
       - name: Build affected
         run: npx nx affected --target=build --parallel=3
@@ -86,11 +86,11 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'main'
+          main-branch-name: "main"
 
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.17.0'
+          go-version: ">=1.17.0"
 
       - run: npx nx affected --target=test --parallel=3

@@ -1,7 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { InspectDto } from './app.dto';
+import { Body, Controller, Post } from "@nestjs/common";
+import { InspectDto } from "./app.dto";
 
-import { AppService } from './app.service';
+import { AppService } from "./app.service";
 
 @Controller()
 export class AppController {

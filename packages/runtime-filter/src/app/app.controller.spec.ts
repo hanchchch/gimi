@@ -1,13 +1,13 @@
-import { Metadata } from '@grpc/grpc-js';
-import { Test, TestingModule } from '@nestjs/testing';
-import { testConfigProvider } from '../environments/environment.test-env';
-import { QUEUE_SERVICE } from '../queue/queue.symbol';
-import { MockQueueService } from '../queue/mock-queue.service';
+import { Metadata } from "@grpc/grpc-js";
+import { Test, TestingModule } from "@nestjs/testing";
+import { testConfigProvider } from "../environments/environment.test-env";
+import { QUEUE_SERVICE } from "../queue/queue.symbol";
+import { MockQueueService } from "../queue/mock-queue.service";
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let app: TestingModule;
   let controller: AppController;
 
@@ -24,10 +24,10 @@ describe('AppController', () => {
     controller = app.get<AppController>(AppController);
   });
 
-  describe('Start', () => {
-    it('should return id', async () => {
+  describe("Start", () => {
+    it("should return id", async () => {
       const result = await controller.Start(
-        { os: 'linux', url: 'url' },
+        { os: "linux", url: "url" },
         new Metadata(),
         /* @ts-ignore */
         {}
@@ -38,10 +38,10 @@ describe('AppController', () => {
     });
   });
 
-  describe('GetResult', () => {
-    it('should return result', async () => {
+  describe("GetResult", () => {
+    it("should return result", async () => {
       const result = await controller.GetResult(
-        { id: 'id' },
+        { id: "id" },
         new Metadata(),
         /* @ts-ignore */
         {}

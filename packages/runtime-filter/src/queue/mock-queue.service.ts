@@ -1,4 +1,4 @@
-import { QueueService } from './queue.service';
+import { QueueService } from "./queue.service";
 
 export class MockQueueService implements QueueService {
   encode<T>(data: T): string {
@@ -15,8 +15,8 @@ export class MockQueueService implements QueueService {
 
   get(key: string[]): Promise<any> {
     return Promise.resolve({
-      request_id: '',
-      inspection_result: { url: '', stderr: '', stdout: '' },
+      request_id: "",
+      inspection_result: { url: "", stderr: "", stdout: "" },
     });
   }
 }

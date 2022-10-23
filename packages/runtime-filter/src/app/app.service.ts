@@ -1,25 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { randomUUID } from "crypto";
 import {
   GetResultRequest,
   GetResultResponse,
   StartRequest,
   StartResponse,
-} from '@proto/nestjs/runtimefilter.interface';
-import { InjectQueue } from '../queue/queue.decorators';
-import { QueueService } from '../queue/queue.service';
-import { HandlerArgs, HandlerResult } from './app.interface';
+} from "@proto/nestjs/runtimefilter.interface";
+import { InjectQueue } from "../queue/queue.decorators";
+import { QueueService } from "../queue/queue.service";
+import { HandlerArgs, HandlerResult } from "./app.interface";
 
 @Injectable()
 export class AppService {
   constructor(@InjectQueue() private readonly queue: QueueService) {}
 
   async put(os: string, data: HandlerArgs) {
-    return this.queue.push(['request', os], data);
+    return this.queue.push(["request", os], data);
   }
 
   async get(id: string): Promise<HandlerResult | null> {
-    return this.queue.get(['results', id]);
+    return this.queue.get(["results", id]);
   }
 
   async start(params: StartRequest): Promise<StartResponse> {

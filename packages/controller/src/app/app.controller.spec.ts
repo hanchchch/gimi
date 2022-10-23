@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { mockRuntimeFilterServiceProvider } from '../runtime-filter/mock-runtime-filter.provider';
+import { Test, TestingModule } from "@nestjs/testing";
+import { mockRuntimeFilterServiceProvider } from "../runtime-filter/mock-runtime-filter.provider";
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let app: TestingModule;
 
   beforeAll(async () => {
@@ -14,8 +14,8 @@ describe('AppController', () => {
     }).compile();
   });
 
-  describe('getData', () => {
-    it('should be defined', () => {
+  describe("getData", () => {
+    it("should be defined", () => {
       const appController = app.get<AppController>(AppController);
       expect(appController).toBeDefined();
     });

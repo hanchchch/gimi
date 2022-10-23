@@ -1,11 +1,11 @@
-import { Test } from '@nestjs/testing';
-import { testConfigProvider } from '../environments/environment.test-env';
-import { MockQueueService } from '../queue/mock-queue.service';
-import { QUEUE_SERVICE } from '../queue/queue.symbol';
+import { Test } from "@nestjs/testing";
+import { testConfigProvider } from "../environments/environment.test-env";
+import { MockQueueService } from "../queue/mock-queue.service";
+import { QUEUE_SERVICE } from "../queue/queue.symbol";
 
-import { AppService } from './app.service';
+import { AppService } from "./app.service";
 
-describe('AppService', () => {
+describe("AppService", () => {
   let service: AppService;
 
   beforeAll(async () => {
@@ -20,17 +20,17 @@ describe('AppService', () => {
     service = app.get<AppService>(AppService);
   });
 
-  describe('start', () => {
-    it('should return request id', async () => {
-      const result = await service.start({ os: 'linux', url: 'url' });
+  describe("start", () => {
+    it("should return request id", async () => {
+      const result = await service.start({ os: "linux", url: "url" });
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
     });
   });
 
-  describe('getResult', () => {
-    it('should return result', async () => {
-      const result = await service.getResult({ id: 'id' });
+  describe("getResult", () => {
+    it("should return result", async () => {
+      const result = await service.getResult({ id: "id" });
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();

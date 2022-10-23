@@ -1,16 +1,16 @@
 /* eslint-disable */
 export default {
-  displayName: 'runtime-filter',
-  preset: '../../jest.preset.js',
+  displayName: "runtime-filter",
+  preset: "../../jest.preset.js",
   globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.spec.json",
     },
   },
-  testEnvironment: 'node',
+  testEnvironment: "node",
   transform: {
-    '^.+\\.[tj]s$': 'ts-jest',
+    "^.+\\.[tj]s$": "ts-jest",
   },
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/packages/runtime-filter',
+  moduleFileExtensions: ["ts", "js", "html"],
+  coverageDirectory: "../../coverage/packages/runtime-filter",
 };
