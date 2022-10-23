@@ -1,3 +1,3 @@
 # Gimi
 
-This project was generated using [Nx](https://nx.dev).
+Cloud-based malicious URL detection system.

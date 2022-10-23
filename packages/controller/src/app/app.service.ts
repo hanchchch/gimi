@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {
-  GetResultRequest,
-  StartRequest,
-} from '@proto/nestjs/runtimefilter.interface';
+import { firstValueFrom } from 'rxjs';
 import { InjectRuntimeFilter } from '../runtime-filter/runtime-filter.decorators';
 import { RuntimeFilterService } from '../runtime-filter/runtime-filter.service';
+import { InspectParams } from './app.dto';
 
 @Injectable()
 export class AppService {
@@ -13,11 +11,15 @@ export class AppService {
     private readonly runtimeFilterService: RuntimeFilterService
   ) {}
 
-  start(data: StartRequest) {
-    return this.runtimeFilterService.start(data);
-  }
-
-  getResult(data: GetResultRequest) {
-    return this.runtimeFilterService.getResult(data);
+  async inspect(params: InspectParams) {
+    const { url, os } = params;
+    const { id } = await firstValueFrom(
+      this.runtimeFilterService.start({ url, os })
+    );
+    // TODO: add blocking get - maybe with pub/sub
+    const { stdout, stderr } = await firstValueFrom(
+      this.runtimeFilterService.getResult({ id })
+    );
+    return { stdout, stderr };
   }
 }
