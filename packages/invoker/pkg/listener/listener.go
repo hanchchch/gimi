@@ -1,7 +1,7 @@
 package listener
 
 import (
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/container"
 )
 
 type HandlerArgs struct {

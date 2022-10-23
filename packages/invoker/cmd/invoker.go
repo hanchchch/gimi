@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/container"
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/listener"
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/container"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/listener"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 	"github.com/joho/godotenv"
 )
 

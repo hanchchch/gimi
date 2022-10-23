@@ -1,19 +1,19 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "packages/chopstick",
+  "sourceRoot": "packages/invoker",
   "targets": {
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "outputPath": "dist/packages/chopstick",
-        "main": "packages/chopstick/cmd/chopstick.go"
+        "outputPath": "dist/packages/invoker",
+        "main": "packages/invoker/cmd/invoker.go"
       }
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "packages/chopstick/cmd/chopstick.go"
+        "main": "packages/invoker/cmd/invoker.go"
       }
     },
     "test": {

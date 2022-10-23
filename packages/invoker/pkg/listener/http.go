@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 )
 
 type HTTPListener struct {

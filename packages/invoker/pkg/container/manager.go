@@ -8,12 +8,12 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/hanchchch/gimi/packages/chopstick/pkg/utils"
+	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 )
 
 const (
 	TryImageName     = "gimi-inspection"
-	ManagerNamespace = "chopstick"
+	ManagerNamespace = "invoker"
 )
 
 type InspectionArgs struct {

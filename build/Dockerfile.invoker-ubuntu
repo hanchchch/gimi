@@ -6,12 +6,12 @@ COPY go.sum .
 RUN go mod download
 
 COPY packages /app/packages
-RUN go build -o /app/chopstick /app/packages/chopstick/cmd/chopstick.go
+RUN go build -o /app/invoker /app/packages/invoker/cmd/invoker.go
 
 FROM golang:1.17-alpine as runtime
 
 RUN apk add --update docker openrc
 RUN rc-update add docker boot
-COPY --from=build /app/chopstick /bin/chopstick
+COPY --from=build /app/invoker /bin/invoker
 
-CMD [ "/bin/chopstick" ]
+CMD [ "/bin/invoker" ]

@@ -6,9 +6,9 @@ services:
     ports:
       - "6379:6379"
 
-  chopstick-ubuntu:
+  invoker-ubuntu:
     build:
-      dockerfile: build/Dockerfile.chopstick-ubuntu
+      dockerfile: build/Dockerfile.invoker-ubuntu
       context: .
     ports:
       - "5001:5001"
