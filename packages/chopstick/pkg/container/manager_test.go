@@ -17,12 +17,21 @@ func contains(s []string, substr string) bool {
 
 func TestContainerCreateRemove(t *testing.T) {
 	m := NewManager()
-	c1, _ := m.CreateContainer(&ContainerConfig{
+	c1, err := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
-	c2, _ := m.CreateContainer(&ContainerConfig{
+
+	if err == nil {
+		t.Skip("docker service unavailable, skipping:", err)
+	}
+
+	c2, err := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
+
+	if err != nil {
+		t.Skip("docker service unavailable, skipping:", err)
+	}
 
 	if c1.ID == "" || c2.ID == "" {
 		t.Fatal("container id is empty")
@@ -80,9 +89,13 @@ func TestContainerCreateRemove(t *testing.T) {
 
 func TestContainerRun(t *testing.T) {
 	m := NewManager()
-	c, _ := m.CreateContainer(&ContainerConfig{
+	c, err := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 	})
+
+	if err != nil {
+		t.Skip("docker service unavailable, skipping:", err)
+	}
 
 	if err := c.Run(10 * time.Second); err != nil {
 		t.Fatal(err)
@@ -95,16 +108,20 @@ func TestContainerRun(t *testing.T) {
 
 func TestContainerLog(t *testing.T) {
 	m := NewManager()
-	c, _ := m.CreateContainer(&ContainerConfig{
+	c, err := m.CreateContainer(&ContainerConfig{
 		Image: "alpine",
 		Cmd:   []string{"echo", "hello world"},
 	})
+
+	if err != nil {
+		t.Skip("docker service unavailable, skipping:", err)
+	}
 
 	if err := c.Run(10 * time.Second); err != nil {
 		t.Fatal(err)
 	}
 
-	_, _, err := c.Logs()
+	_, _, err = c.Logs()
 	if err != nil {
 		t.Fatal(err)
 	}
