@@ -1,16 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { RuntimeFilterService } from '@proto/nestjs/runtimefilter.interface';
-import { ClientGrpc } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import {
+  GetResultRequest,
+  StartRequest,
+} from '@proto/nestjs/runtimefilter.interface';
+import { InjectRuntimeFilter } from '../runtime-filter/runtime-filter.decorators';
+import { RuntimeFilterService } from '../runtime-filter/runtime-filter.service';
 
 @Injectable()
 export class AppService {
-  private service: RuntimeFilterService;
-
   constructor(
-    @Inject('RUNTIME_FILTER_PACKAGE') private readonly client: ClientGrpc
-  ) {
-    this.service = this.client.getService<RuntimeFilterService>(
-      'RuntimeFilterService'
-    );
+    @InjectRuntimeFilter()
+    private readonly runtimeFilterService: RuntimeFilterService
+  ) {}
+
+  start(data: StartRequest) {
+    return this.runtimeFilterService.start(data);
+  }
+
+  getResult(data: GetResultRequest) {
+    return this.runtimeFilterService.getResult(data);
   }
 }

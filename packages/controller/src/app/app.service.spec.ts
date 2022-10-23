@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-
+import { mockRuntimeFilterServiceProvider } from '../runtime-filter/mock-runtime-filter.provider';
 import { AppService } from './app.service';
 
 describe('AppService', () => {
@@ -7,7 +7,7 @@ describe('AppService', () => {
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
-      providers: [AppService],
+      providers: [AppService, mockRuntimeFilterServiceProvider],
     }).compile();
 
     service = app.get<AppService>(AppService);

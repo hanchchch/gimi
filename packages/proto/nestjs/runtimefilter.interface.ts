@@ -20,7 +20,7 @@ export interface GetResultResponse {
   stderr: string;
 }
 
-export interface RuntimeFilterService {
+export interface IRuntimeFilterService {
   Start(data: StartRequest): Observable<StartResponse>;
   GetResult(data: GetResultRequest): Observable<GetResultResponse>;
 }

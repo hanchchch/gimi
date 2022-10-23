@@ -12,7 +12,7 @@ import { AppModule } from './app/app.module';
 import {
   GetResultRequest,
   StartRequest,
-  RuntimeFilterService,
+  IRuntimeFilterService,
 } from '@proto/nestjs/runtimefilter.interface';
 import { firstValueFrom } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -25,12 +25,12 @@ const clientOptions = createClientOptions({});
 
 @Controller()
 class TestClientController {
-  private service: RuntimeFilterService;
+  private service: IRuntimeFilterService;
 
   constructor(
     @Inject('RUNTIME_FILTER_PACKAGE') private readonly client: ClientGrpc
   ) {
-    this.service = this.client.getService<RuntimeFilterService>(
+    this.service = this.client.getService<IRuntimeFilterService>(
       'RuntimeFilterService'
     );
   }

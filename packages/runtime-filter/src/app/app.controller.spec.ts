@@ -39,7 +39,7 @@ describe('AppController', () => {
   });
 
   describe('GetResult', () => {
-    it('should return ...', async () => {
+    it('should return result', async () => {
       const result = await controller.GetResult(
         { id: 'id' },
         new Metadata(),
