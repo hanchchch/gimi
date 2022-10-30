@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { mockDbFilterServiceProvider } from "../db-filter/mock-db-filter.provider";
 import { mockRuntimeFilterServiceProvider } from "../runtime-filter/mock-runtime-filter.provider";
 
 import { AppController } from "./app.controller";
@@ -10,7 +11,11 @@ describe("AppController", () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService, mockRuntimeFilterServiceProvider],
+      providers: [
+        AppService,
+        mockRuntimeFilterServiceProvider,
+        mockDbFilterServiceProvider,
+      ],
     }).compile();
   });
 
