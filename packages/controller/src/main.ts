@@ -16,7 +16,7 @@ async function bootstrap() {
   const port = config.get("PORT", 3000);
 
   await app.listen(port);
-  Logger.log(`🚀 Application is running on: ${await app.getUrl()}`);
+  Logger.log(`🚀 Controller is running on: ${await app.getUrl()}`);
 }
 
 bootstrap();

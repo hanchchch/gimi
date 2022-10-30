@@ -22,7 +22,7 @@ export class AppService {
   }
 
   async get(id: string): Promise<HandlerResult | null> {
-    const str = await this.queue.get(["result", id]);
+    const str = await this.queue.get(["results", id]);
     if (!str) {
       return null;
     }

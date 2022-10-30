@@ -5,7 +5,6 @@ import { createClientOptions } from "@proto/nestjs/runtimefilter.options";
 
 import { AppModule } from "./app/app.module";
 import { EnvVars } from "./environments/environment.interface";
-import { join } from "path";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {});
@@ -16,8 +15,16 @@ async function bootstrap() {
 
   app.connectMicroservice(options);
   await app.startAllMicroservices();
-  await app.listen(config.get("HTTP_PORT", 3000));
-  Logger.log(`🚀 Application is running on ${options.options.url}`);
+  await app.init();
+  Logger.log(`🚀 Runtime-filter (gRPC) is running on ${options.options.url}`);
+
+  const httpPort = config.get("HTTP_PORT", "");
+  if (httpPort) {
+    await app.listen(httpPort);
+    Logger.log(
+      `🚀  Runtime-filter (HTTP) is running on: ${await app.getUrl()}`
+    );
+  }
 }
 
 bootstrap();

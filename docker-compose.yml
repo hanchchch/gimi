@@ -28,7 +28,6 @@ services:
       - "50051:50051"
     environment:
       - PORT=50051
-      - HTTP_PORT=5000
       - REDIS_URL=redis://redis:6379
     links:
       - redis
