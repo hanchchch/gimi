@@ -4,7 +4,7 @@ all: go ts
 
 go: go/messages/runtimefilter.pb.go go/messages/inspection.pb.go
 
-ts: ts/messages/runtimefilter.pb.ts ts/messages/inspection.pb.ts
+ts: ts/messages/runtimefilter.pb.ts ts/messages/dbfilter.pb.ts ts/messages/inspection.pb.ts
 
 clean:
 	rm -f go/messages/*.pb.go
@@ -26,6 +26,12 @@ ts/messages/runtimefilter.pb.ts:
 		--plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts_proto \
 		--ts_out=./ts \
 		./messages/runtimefilter.proto
+
+ts/messages/dbfilter.pb.ts:
+	protoc \
+		--plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts_proto \
+		--ts_out=./ts \
+		./messages/dbfilter.proto
 
 ts/messages/inspection.pb.ts:
 	protoc \

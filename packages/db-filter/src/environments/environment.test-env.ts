@@ -3,7 +3,7 @@ import { join } from "path";
 import { EnvVars } from "./environment.interface";
 
 export const testEnv: EnvVars = {
-  REDIS_URL: "redis://localhost:6379",
+  DB_URL: "postgres://localhost:6379",
   PORT: 50051,
   PROTO_PATH: join(
     __dirname,

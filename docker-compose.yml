@@ -32,6 +32,16 @@ services:
     links:
       - redis
 
+  db-filter:
+    build:
+      dockerfile: build/Dockerfile.db-filter
+      context: .
+    ports:
+      - "50052:50052"
+    environment:
+      - PORT=50052
+      - DB_URL=postgres://postgres:6379
+
   controller:
     build:
       dockerfile: build/Dockerfile.controller

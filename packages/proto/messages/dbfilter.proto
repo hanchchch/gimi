@@ -1,0 +1,17 @@
+syntax = "proto3";
+option go_package = "./proto";
+package dbfilter;
+
+
+service DbFilterService {
+  rpc Find(FindRequest) returns (FindResponse) {}
+}
+
+message FindRequest {
+  string url = 1;
+}
+
+message FindResponse {
+  string url = 1;
+  bool found = 2;
+}
