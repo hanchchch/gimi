@@ -9,22 +9,13 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
 const (
 	TryImageName     = "gimi-inspection"
 	ManagerNamespace = "invoker"
 )
-
-type InspectionArgs struct {
-	Url string `json:"url"`
-}
-
-type InspectionResult struct {
-	Url    string `json:"url"`
-	Stdout string `json:"stdout"`
-	Stderr string `json:"stderr"`
-}
 
 type Manager struct {
 	docker     *client.Client
@@ -48,7 +39,7 @@ type TryContainerConfig struct {
 	AttachStderr bool
 	StopTimeout  *int
 	Env          []string
-	Args         InspectionArgs
+	Args         *pb.InspectionArgs
 }
 
 func NewManager() *Manager {

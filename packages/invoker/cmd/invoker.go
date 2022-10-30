@@ -9,6 +9,8 @@ import (
 	"github.com/hanchchch/gimi/packages/invoker/pkg/listener"
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 	"github.com/joho/godotenv"
+
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
 func main() {
@@ -31,9 +33,9 @@ func main() {
 		panic(err)
 	}
 
-	handler := func(args listener.HandlerArgs) (*listener.HandlerResult, error) {
+	handler := func(args *pb.HandlerArgs) (*pb.HandlerResult, error) {
 		c, err := m.CreateTryContainer(&container.TryContainerConfig{
-			Args: args.InspectionArgs,
+			Args: args.Args,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("failed to create container: %w", err)
@@ -52,10 +54,10 @@ func main() {
 			return nil, fmt.Errorf("failed to remove container: %w", err)
 		}
 
-		return &listener.HandlerResult{
+		return &pb.HandlerResult{
 			RequestId: args.RequestId,
-			InspectionResult: container.InspectionResult{
-				Url:    args.InspectionArgs.Url,
+			Result: &pb.InspectionResult{
+				Url:    args.Args.Url,
 				Stdout: string(stdout),
 				Stderr: string(stderr),
 			},

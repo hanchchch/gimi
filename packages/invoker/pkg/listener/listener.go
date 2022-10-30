@@ -1,20 +1,10 @@
 package listener
 
 import (
-	"github.com/hanchchch/gimi/packages/invoker/pkg/container"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
-type HandlerArgs struct {
-	RequestId      string                   `json:"request_id"`
-	InspectionArgs container.InspectionArgs `json:"inspection_args"`
-}
-
-type HandlerResult struct {
-	RequestId        string                     `json:"request_id"`
-	InspectionResult container.InspectionResult `json:"inspection_result"`
-}
-
-type HandlerFunc func(HandlerArgs) (*HandlerResult, error)
+type HandlerFunc func(*pb.HandlerArgs) (*pb.HandlerResult, error)
 
 type Listener interface {
 	Listen() error

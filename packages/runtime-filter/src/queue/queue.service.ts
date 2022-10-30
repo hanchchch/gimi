@@ -1,9 +1,5 @@
 export interface QueueService {
-  encode<T>(data: T): string;
+  push(key: string[], value: string): Promise<any>;
 
-  decode<T>(data: string): T;
-
-  push<T>(key: string[], value: T): Promise<any>;
-
-  get<T>(key: string[]): Promise<T>;
+  get(key: string[]): Promise<string | null>;
 }

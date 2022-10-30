@@ -7,14 +7,14 @@ import {
 } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { ClientGrpc, ClientsModule } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
 import { createClientOptions } from "@proto/nestjs/runtimefilter.options";
-import { AppModule } from "./app/app.module";
+import { IRuntimeFilterService } from "@proto/nestjs/runtimefilter.interface";
 import {
   GetResultRequest,
   StartRequest,
-  IRuntimeFilterService,
-} from "@proto/nestjs/runtimefilter.interface";
-import { firstValueFrom } from "rxjs";
+} from "@proto/ts/messages/runtimefilter";
+import { AppModule } from "./app/app.module";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import { testConfigProvider } from "./environments/environment.test-env";

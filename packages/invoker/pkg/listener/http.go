@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
 type HTTPListener struct {
@@ -32,7 +33,7 @@ func (l *HTTPListener) Listen() error {
 
 func (l *HTTPListener) OnInvoke(callback HandlerFunc) error {
 	l.router.HandleFunc("/invoke", logging(func(w http.ResponseWriter, req *http.Request) {
-		var args HandlerArgs
+		args := &pb.HandlerArgs{}
 		if err := json.NewDecoder(req.Body).Decode(&args); err != nil {
 			http.Error(w, utils.ErrorJsonString(err), http.StatusBadRequest)
 			return

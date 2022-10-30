@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import {
   GetResultRequest,
   StartRequest,
-} from "@proto/nestjs/runtimefilter.interface";
+} from "@proto/ts/messages/runtimefilter";
 import { randomUUID } from "crypto";
 
 @Injectable()

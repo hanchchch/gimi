@@ -1,7 +1,20 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/proto/src",
+  "sourceRoot": "packages/proto",
   "projectType": "library",
-  "targets": {},
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "outputPath": [
+          "packages/proto/go/messages/runtimefilter.pb.go",
+          "packages/proto/go/messages/inspection.pb.go",
+          "packages/proto/ts/messages/runtimefilter.pb.ts",
+          "packages/proto/ts/messages/inspection.pb.ts"
+        ],
+        "command": "make -C packages/proto clean; make -C packages/proto"
+      }
+    }
+  },
   "tags": []
 }

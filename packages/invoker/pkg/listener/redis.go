@@ -1,9 +1,7 @@
 package listener
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"log"
 	"runtime"
 	"strings"
@@ -11,6 +9,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
+	"google.golang.org/protobuf/proto"
 )
 
 const keyPrefix = "gimi:inspection"
@@ -76,9 +76,9 @@ func (l *RedisListener) Listen() error {
 		}
 		body := cmd.Val()[1]
 
-		var args HandlerArgs
-		if err := json.NewDecoder(bytes.NewBufferString(body)).Decode(&args); err != nil {
-			log.Printf("error while decoding request: %v", err)
+		args := &pb.HandlerArgs{}
+		if err := proto.Unmarshal([]byte(body), args); err != nil {
+			log.Printf("failed to parse request: %v", err)
 			continue
 		}
 
@@ -88,7 +88,12 @@ func (l *RedisListener) Listen() error {
 			continue
 		}
 
-		resp, _ := json.Marshal(data)
+		resp, err := proto.Marshal(data)
+		if err != nil {
+			log.Printf("failed to parse response: %v", err)
+			continue
+		}
+
 		_, err = l.redis.Set(ctx, l.ResultKey(args.RequestId), resp, 3*time.Hour).Result()
 		if err != nil {
 			log.Printf("error while lpush: %v", err)

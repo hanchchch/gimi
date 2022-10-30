@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  GetResultRequest,
-  IRuntimeFilterService,
   StartRequest,
-} from "@proto/nestjs/runtimefilter.interface";
+  GetResultRequest,
+} from "@proto/ts/messages/runtimefilter";
+import { IRuntimeFilterService } from "@proto/nestjs/runtimefilter.interface";
 import { ClientGrpc } from "@nestjs/microservices";
 import { RUNTIME_FILTER_PACKAGE } from "./runtime-filter.symbols";
 

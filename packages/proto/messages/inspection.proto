@@ -1,0 +1,23 @@
+syntax = "proto3";
+option go_package = "./proto";
+package inspection;
+
+message InspectionArgs {
+  string url = 1;
+}
+
+message InspectionResult {
+  string url = 1;
+  string stdout = 2;
+  string stderr = 3;
+}
+
+message HandlerArgs {
+  string request_id = 1;
+  InspectionArgs args = 2;
+}
+
+message HandlerResult {
+  string request_id = 1;
+  InspectionResult result = 2;
+}

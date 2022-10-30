@@ -5,28 +5,35 @@ import {
   GetResultResponse,
   StartRequest,
   StartResponse,
-} from "@proto/nestjs/runtimefilter.interface";
+} from "@proto/ts/messages/runtimefilter";
+import { HandlerArgs, HandlerResult } from "@proto/ts/messages/inspection";
 import { InjectQueue } from "../queue/queue.decorators";
 import { QueueService } from "../queue/queue.service";
-import { HandlerArgs, HandlerResult } from "./app.interface";
 
 @Injectable()
 export class AppService {
   constructor(@InjectQueue() private readonly queue: QueueService) {}
 
   async put(os: string, data: HandlerArgs) {
-    return this.queue.push(["request", os], data);
+    return this.queue.push(
+      ["request", os],
+      new TextDecoder().decode(HandlerArgs.encode(data).finish())
+    );
   }
 
   async get(id: string): Promise<HandlerResult | null> {
-    return this.queue.get(["results", id]);
+    const str = await this.queue.get(["result", id]);
+    if (!str) {
+      return null;
+    }
+    return HandlerResult.decode(new TextEncoder().encode(str));
   }
 
   async start(params: StartRequest): Promise<StartResponse> {
     const { url, os } = params;
     const id = randomUUID();
 
-    await this.put(os, { request_id: id, inspection_args: { url } });
+    await this.put(os, { requestId: id, args: { url } });
 
     return { id };
   }
@@ -40,7 +47,7 @@ export class AppService {
     }
 
     const {
-      inspection_result: { url, stderr, stdout },
+      result: { url, stderr, stdout },
     } = result;
 
     return { id, url, stderr, stdout };
