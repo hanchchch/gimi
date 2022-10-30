@@ -2,9 +2,9 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "invoker": "packages/invoker",
     "controller": "packages/controller",
     "inspection": "packages/inspection",
+    "invoker": "packages/invoker",
     "proto": "packages/proto",
     "runtime-filter": "packages/runtime-filter"
   }

@@ -6,6 +6,7 @@ package runtimefilter;
 service RuntimeFilterService {
   rpc Start(StartRequest) returns (StartResponse) {}
   rpc GetResult(GetResultRequest) returns (GetResultResponse) {}
+  rpc SubResult(SubResultRequest) returns (GetResultResponse) {}
 }
 
 message StartRequest {
@@ -26,4 +27,9 @@ message GetResultResponse {
   string url = 2;
   string stdout = 3;
   string stderr = 4;
+}
+
+message SubResultRequest  {
+  string id = 1;
+  optional int32 timeout = 2;
 }

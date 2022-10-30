@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import {
   GetResultRequest,
   StartRequest,
+  SubResultRequest,
 } from "@proto/ts/messages/runtimefilter";
 import { randomUUID } from "crypto";
 
@@ -18,5 +19,9 @@ export class MockRuntimeFilterService {
       stdout: "",
       stderr: "",
     };
+  }
+
+  subResult(data: SubResultRequest) {
+    return this.getResult({ id: data.id });
   }
 }

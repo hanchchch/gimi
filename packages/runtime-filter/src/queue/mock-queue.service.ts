@@ -16,4 +16,8 @@ export class MockQueueService implements QueueService {
       )
     );
   }
+
+  subOnce(key: string[], timeout: number): Promise<string | null> {
+    return this.get(key);
+  }
 }

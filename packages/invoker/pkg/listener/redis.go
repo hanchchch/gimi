@@ -57,6 +57,10 @@ func (l *RedisListener) ResultKey(requestId string) string {
 	return l.buildKey("results", requestId)
 }
 
+func (l *RedisListener) ResultPubKey(requestId string) string {
+	return l.buildKey("results", "pub", requestId)
+}
+
 func (l *RedisListener) KeepListenerKey() error {
 	for {
 		l.redis.SetEX(context.Background(), l.ListenerKey(), "OK", 3*time.Second)
@@ -97,6 +101,12 @@ func (l *RedisListener) Listen() error {
 		_, err = l.redis.Set(ctx, l.ResultKey(args.RequestId), resp, 3*time.Hour).Result()
 		if err != nil {
 			log.Printf("error while lpush: %v", err)
+			continue
+		}
+
+		_, err = l.redis.Publish(ctx, l.ResultPubKey(args.RequestId), resp).Result()
+		if err != nil {
+			log.Printf("error while publish: %v", err)
 			continue
 		}
 	}
