@@ -1,15 +1,19 @@
 version: "3"
 
 services:
-  redis:
+  message-queue:
     image: redis
     ports:
       - "6379:6379"
 
-  postgres:
+  blacklist-db:
     image: postgres
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_USER=blacklist
+      - POSTGRES_PASSWORD=blacklist
+      - POSTGRES_DB=blacklist
 
   invoker-ubuntu:
     build:
@@ -20,10 +24,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://message-queue:6379
       - HTTP_ADDR=:5001
     links:
-      - redis
+      - message-queue
 
   runtime-filter:
     build:
@@ -33,9 +37,9 @@ services:
       - "50051:50051"
     environment:
       - PORT=50051
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://message-queue:6379
     links:
-      - redis
+      - message-queue
 
   db-filter:
     build:
@@ -45,9 +49,9 @@ services:
       - "50052:50052"
     environment:
       - PORT=50052
-      - DB_URL=postgres://postgres:5432
+      - DB_URL=postgres://blacklist:blacklist@blacklist-db:5432/blacklist
     links:
-      - postgres
+      - blacklist-db
 
   controller:
     build:
