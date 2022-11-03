@@ -4,6 +4,7 @@ import { EnvVars } from "./environment.interface";
 
 export const testEnv: EnvVars = {
   DB_URL: "postgres://localhost:6379",
+  DB_SYNC: true,
   PORT: 50051,
   PROTO_PATH: join(
     __dirname,
