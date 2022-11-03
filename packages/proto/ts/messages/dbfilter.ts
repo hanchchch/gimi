@@ -3,14 +3,82 @@ import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "dbfilter";
 
+export interface Blacklist {
+  url: string;
+  detectedAt: string;
+}
+
 export interface FindRequest {
   url: string;
 }
 
 export interface FindResponse {
-  url: string;
   found: boolean;
+  blacklist?: Blacklist | undefined;
 }
+
+function createBaseBlacklist(): Blacklist {
+  return { url: "", detectedAt: "" };
+}
+
+export const Blacklist = {
+  encode(
+    message: Blacklist,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.url !== "") {
+      writer.uint32(10).string(message.url);
+    }
+    if (message.detectedAt !== "") {
+      writer.uint32(18).string(message.detectedAt);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Blacklist {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBlacklist();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.url = reader.string();
+          break;
+        case 2:
+          message.detectedAt = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Blacklist {
+    return {
+      url: isSet(object.url) ? String(object.url) : "",
+      detectedAt: isSet(object.detectedAt) ? String(object.detectedAt) : "",
+    };
+  },
+
+  toJSON(message: Blacklist): unknown {
+    const obj: any = {};
+    message.url !== undefined && (obj.url = message.url);
+    message.detectedAt !== undefined && (obj.detectedAt = message.detectedAt);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Blacklist>, I>>(
+    object: I
+  ): Blacklist {
+    const message = createBaseBlacklist();
+    message.url = object.url ?? "";
+    message.detectedAt = object.detectedAt ?? "";
+    return message;
+  },
+};
 
 function createBaseFindRequest(): FindRequest {
   return { url: "" };
@@ -65,7 +133,7 @@ export const FindRequest = {
 };
 
 function createBaseFindResponse(): FindResponse {
-  return { url: "", found: false };
+  return { found: false, blacklist: undefined };
 }
 
 export const FindResponse = {
@@ -73,11 +141,11 @@ export const FindResponse = {
     message: FindResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
     if (message.found === true) {
-      writer.uint32(16).bool(message.found);
+      writer.uint32(8).bool(message.found);
+    }
+    if (message.blacklist !== undefined) {
+      Blacklist.encode(message.blacklist, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -90,10 +158,10 @@ export const FindResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.url = reader.string();
+          message.found = reader.bool();
           break;
         case 2:
-          message.found = reader.bool();
+          message.blacklist = Blacklist.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -105,15 +173,20 @@ export const FindResponse = {
 
   fromJSON(object: any): FindResponse {
     return {
-      url: isSet(object.url) ? String(object.url) : "",
       found: isSet(object.found) ? Boolean(object.found) : false,
+      blacklist: isSet(object.blacklist)
+        ? Blacklist.fromJSON(object.blacklist)
+        : undefined,
     };
   },
 
   toJSON(message: FindResponse): unknown {
     const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
     message.found !== undefined && (obj.found = message.found);
+    message.blacklist !== undefined &&
+      (obj.blacklist = message.blacklist
+        ? Blacklist.toJSON(message.blacklist)
+        : undefined);
     return obj;
   },
 
@@ -121,8 +194,11 @@ export const FindResponse = {
     object: I
   ): FindResponse {
     const message = createBaseFindResponse();
-    message.url = object.url ?? "";
     message.found = object.found ?? false;
+    message.blacklist =
+      object.blacklist !== undefined && object.blacklist !== null
+        ? Blacklist.fromPartial(object.blacklist)
+        : undefined;
     return message;
   },
 };

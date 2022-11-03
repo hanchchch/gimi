@@ -19,10 +19,13 @@ export class AppService {
   async inspect(params: InspectParams) {
     const { url, os, timeout = this.defaultTimeout } = params;
 
-    const { found } = await firstValueFrom(this.dbFilterService.find({ url }));
+    const { found, blacklist } = await firstValueFrom(
+      this.dbFilterService.find({ url })
+    );
+
     if (found) {
       // TODO return type
-      return { found };
+      return { found, blacklist };
     }
 
     const { id } = await firstValueFrom(

@@ -1,10 +1,16 @@
 import { BaseEntity, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
+import { Blacklist as IBlacklist } from "@proto/ts/messages/dbfilter";
 
 @Entity()
-export class Blacklist extends BaseEntity {
+export class Blacklist extends BaseEntity implements IBlacklist {
   @PrimaryColumn()
   url: string;
 
-  @CreateDateColumn()
-  detectedAt: Date;
+  @CreateDateColumn({
+    transformer: {
+      from: (value) => value.toISOString(),
+      to: (value) => value,
+    },
+  })
+  detectedAt: string;
 }

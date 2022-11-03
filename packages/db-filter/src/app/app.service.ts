@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindRequest } from "@proto/ts/messages/dbfilter";
+import { FindRequest, FindResponse } from "@proto/ts/messages/dbfilter";
 import { Repository } from "typeorm";
 import { Blacklist } from "./blacklist.entity";
 
@@ -11,7 +11,7 @@ export class AppService {
     private readonly blacklistRepository: Repository<Blacklist>
   ) {}
 
-  async find(params: FindRequest) {
+  async find(params: FindRequest): Promise<FindResponse> {
     const { url } = params;
     const blacklist = await this.blacklistRepository.findOne({
       where: { url },

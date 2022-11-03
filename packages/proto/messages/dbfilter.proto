@@ -2,6 +2,10 @@ syntax = "proto3";
 option go_package = "./proto";
 package dbfilter;
 
+message Blacklist {
+  string url = 1;
+  string detectedAt = 2;
+}
 
 service DbFilterService {
   rpc Find(FindRequest) returns (FindResponse) {}
@@ -12,6 +16,6 @@ message FindRequest {
 }
 
 message FindResponse {
-  string url = 1;
-  bool found = 2;
+  bool found = 1;
+  optional Blacklist blacklist = 2;
 }
