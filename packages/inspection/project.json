@@ -13,7 +13,8 @@
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "packages/inspection/cmd/inspection.go"
+        "main": "packages/inspection/cmd/inspection.go",
+        "arguments": ["-url", "http://localhost:4200"]
       }
     },
     "test": {
