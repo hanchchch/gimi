@@ -1,0 +1,63 @@
+#welcome {
+  margin-top: 2.5rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  span {
+    display: block;
+    font-size: 1.875rem;
+    font-weight: 300;
+    line-height: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+#hero {
+  align-items: center;
+  background-color: hsla(214, 62%, 21%, 1);
+  border: none;
+  box-sizing: border-box;
+  color: rgba(55, 65, 81, 1);
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 3.5rem;
+
+  h2 {
+    position: relative;
+    color: rgba(255, 255, 255, 1);
+  }
+
+  svg {
+    color: hsla(162, 47%, 50%, 1);
+    height: 2rem;
+    left: -0.25rem;
+    position: absolute;
+    top: 0;
+    width: 2rem;
+  }
+
+  span {
+    margin-left: 2.5rem;
+  }
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(55, 65, 81, 1);
+  margin-top: 3.5rem;
+
+  .wrapper {
+    max-width: 800px;
+  }
+
+  button {
+    margin-top: 1rem;
+  }
+}

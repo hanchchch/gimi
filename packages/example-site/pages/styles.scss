@@ -53,6 +53,9 @@ pre {
   overflow: scroll;
   padding: 0.5rem 0.75rem;
 }
+
+$main: rgba(55, 65, 81, 1);
+
 .shadow {
   box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -70,82 +73,45 @@ pre {
   padding-bottom: 3rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  color: rgba(55, 65, 81, 1);
+  color: $main;
   width: 100%;
 }
-#welcome {
-  margin-top: 2.5rem;
-}
-#welcome h1 {
-  font-size: 3rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1;
-}
-#welcome span {
-  display: block;
-  font-size: 1.875rem;
-  font-weight: 300;
-  line-height: 2.25rem;
-  margin-bottom: 0.5rem;
-}
-#hero {
-  align-items: center;
-  background-color: hsla(214, 62%, 21%, 1);
-  border: none;
-  box-sizing: border-box;
-  color: rgba(55, 65, 81, 1);
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-top: 3.5rem;
-}
-#hero .text-container {
-  color: rgba(255, 255, 255, 1);
+.card {
+  @extend .rounded;
   padding: 3rem 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
 }
-#hero .text-container h2 {
-  font-size: 1.5rem;
-  line-height: 2rem;
-  position: relative;
+
+label {
+  display: block;
+  margin-top: 0.5rem;
 }
-#hero .text-container h2 svg {
-  color: hsla(162, 47%, 50%, 1);
-  height: 2rem;
-  left: -0.25rem;
-  position: absolute;
-  top: 0;
-  width: 2rem;
+
+input {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  border-bottom: 1px solid $main;
 }
-#hero .text-container h2 span {
-  margin-left: 2.5rem;
-}
-#hero .text-container a {
-  background-color: rgba(255, 255, 255, 1);
-  border-radius: 0.75rem;
-  color: rgba(55, 65, 81, 1);
-  display: inline-block;
-  margin-top: 1.5rem;
-  padding: 1rem 2rem;
-  text-decoration: inherit;
-}
-#hero .logo-container {
-  display: none;
-  justify-content: center;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-#hero .logo-container svg {
+
+button {
+  @extend .rounded;
+  background-color: hsla(162, 47%, 50%, 1);
+  border: none;
   color: rgba(255, 255, 255, 1);
-  width: 66.666667%;
-}
-@media screen and (min-width: 768px) {
-  #hero {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  #hero .logo-container {
-    display: flex;
-  }
-  #middle-content {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 1rem 2rem;
+  transition: background-color 0.15s ease-in-out;
+  width: 100%;
+
+  &:hover {
+    background-color: hsla(162, 47%, 40%, 1);
   }
 }
