@@ -1,18 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"fmt"
 
 	c "github.com/hanchchch/gimi/packages/inspection/pkg/chrome"
 	h "github.com/hanchchch/gimi/packages/inspection/pkg/headless"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
+	"google.golang.org/protobuf/proto"
 )
-
-type InspectionResult struct {
-	Locations []string `json:"locations"`
-	Malicious bool     `json:"malicious"`
-}
 
 func main() {
 	url := flag.String("url", "", "target url")
@@ -37,14 +32,16 @@ func main() {
 		panic(err)
 	}
 
-	r := InspectionResult{}
+	r := &pb.InspectionResult{
+		Url: *url,
+	}
 	r.Locations = hr.Locations
 	r.Malicious = cr.Malicious
 
-	b, err := json.Marshal(r)
+	b, err := proto.Marshal(r)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("%v", string(b))
+	println(string(b))
 }

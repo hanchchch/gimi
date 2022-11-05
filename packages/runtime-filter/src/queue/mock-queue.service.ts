@@ -11,7 +11,7 @@ export class MockQueueService implements QueueService {
       new TextDecoder().decode(
         HandlerResult.encode({
           requestId: "",
-          result: { url: "", stderr: "", stdout: "" },
+          result: { url: "", malicious: false, locations: [] },
         }).finish()
       )
     );

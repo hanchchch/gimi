@@ -15,9 +15,9 @@ services:
       - POSTGRES_PASSWORD=blacklist
       - POSTGRES_DB=blacklist
 
-  invoker-ubuntu:
+  invoker-linux:
     build:
-      dockerfile: build/Dockerfile.invoker-ubuntu
+      dockerfile: build/Dockerfile.invoker-linux
       context: .
     ports:
       - "5001:5001"

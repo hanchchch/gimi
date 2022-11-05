@@ -19,8 +19,7 @@ export interface GetResultRequest {
 export interface GetResultResponse {
   id: string;
   url: string;
-  stdout: string;
-  stderr: string;
+  malicious: boolean;
 }
 
 export interface SubResultRequest {
@@ -196,7 +195,7 @@ export const GetResultRequest = {
 };
 
 function createBaseGetResultResponse(): GetResultResponse {
-  return { id: "", url: "", stdout: "", stderr: "" };
+  return { id: "", url: "", malicious: false };
 }
 
 export const GetResultResponse = {
@@ -210,11 +209,8 @@ export const GetResultResponse = {
     if (message.url !== "") {
       writer.uint32(18).string(message.url);
     }
-    if (message.stdout !== "") {
-      writer.uint32(26).string(message.stdout);
-    }
-    if (message.stderr !== "") {
-      writer.uint32(34).string(message.stderr);
+    if (message.malicious === true) {
+      writer.uint32(24).bool(message.malicious);
     }
     return writer;
   },
@@ -233,10 +229,7 @@ export const GetResultResponse = {
           message.url = reader.string();
           break;
         case 3:
-          message.stdout = reader.string();
-          break;
-        case 4:
-          message.stderr = reader.string();
+          message.malicious = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -250,8 +243,7 @@ export const GetResultResponse = {
     return {
       id: isSet(object.id) ? String(object.id) : "",
       url: isSet(object.url) ? String(object.url) : "",
-      stdout: isSet(object.stdout) ? String(object.stdout) : "",
-      stderr: isSet(object.stderr) ? String(object.stderr) : "",
+      malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
     };
   },
 
@@ -259,8 +251,7 @@ export const GetResultResponse = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.url !== undefined && (obj.url = message.url);
-    message.stdout !== undefined && (obj.stdout = message.stdout);
-    message.stderr !== undefined && (obj.stderr = message.stderr);
+    message.malicious !== undefined && (obj.malicious = message.malicious);
     return obj;
   },
 
@@ -270,8 +261,7 @@ export const GetResultResponse = {
     const message = createBaseGetResultResponse();
     message.id = object.id ?? "";
     message.url = object.url ?? "";
-    message.stdout = object.stdout ?? "";
-    message.stderr = object.stderr ?? "";
+    message.malicious = object.malicious ?? false;
     return message;
   },
 };

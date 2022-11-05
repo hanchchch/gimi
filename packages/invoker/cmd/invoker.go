@@ -9,6 +9,7 @@ import (
 	"github.com/hanchchch/gimi/packages/invoker/pkg/listener"
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 	"github.com/joho/godotenv"
+	"google.golang.org/protobuf/proto"
 
 	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
@@ -45,7 +46,8 @@ func main() {
 			return nil, fmt.Errorf("failed to run container: %w", err)
 		}
 
-		stdout, stderr, err := c.Logs()
+		stdout, _, err := c.Logs()
+
 		if err != nil {
 			return nil, fmt.Errorf("failed to get logs from container: %w", err)
 		}
@@ -54,13 +56,12 @@ func main() {
 			return nil, fmt.Errorf("failed to remove container: %w", err)
 		}
 
+		r := &pb.InspectionResult{}
+		proto.Unmarshal(stdout, r)
+
 		return &pb.HandlerResult{
 			RequestId: args.RequestId,
-			Result: &pb.InspectionResult{
-				Url:    args.Args.Url,
-				Stdout: string(stdout),
-				Stderr: string(stderr),
-			},
+			Result:    r,
 		}, nil
 	}
 

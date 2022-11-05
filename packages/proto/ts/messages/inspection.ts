@@ -9,8 +9,8 @@ export interface InspectionArgs {
 
 export interface InspectionResult {
   url: string;
-  stdout: string;
-  stderr: string;
+  malicious: boolean;
+  locations: string[];
 }
 
 export interface HandlerArgs {
@@ -76,7 +76,7 @@ export const InspectionArgs = {
 };
 
 function createBaseInspectionResult(): InspectionResult {
-  return { url: "", stdout: "", stderr: "" };
+  return { url: "", malicious: false, locations: [] };
 }
 
 export const InspectionResult = {
@@ -87,11 +87,11 @@ export const InspectionResult = {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
     }
-    if (message.stdout !== "") {
-      writer.uint32(18).string(message.stdout);
+    if (message.malicious === true) {
+      writer.uint32(16).bool(message.malicious);
     }
-    if (message.stderr !== "") {
-      writer.uint32(26).string(message.stderr);
+    for (const v of message.locations) {
+      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -107,10 +107,10 @@ export const InspectionResult = {
           message.url = reader.string();
           break;
         case 2:
-          message.stdout = reader.string();
+          message.malicious = reader.bool();
           break;
         case 3:
-          message.stderr = reader.string();
+          message.locations.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -123,16 +123,22 @@ export const InspectionResult = {
   fromJSON(object: any): InspectionResult {
     return {
       url: isSet(object.url) ? String(object.url) : "",
-      stdout: isSet(object.stdout) ? String(object.stdout) : "",
-      stderr: isSet(object.stderr) ? String(object.stderr) : "",
+      malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
+      locations: Array.isArray(object?.locations)
+        ? object.locations.map((e: any) => String(e))
+        : [],
     };
   },
 
   toJSON(message: InspectionResult): unknown {
     const obj: any = {};
     message.url !== undefined && (obj.url = message.url);
-    message.stdout !== undefined && (obj.stdout = message.stdout);
-    message.stderr !== undefined && (obj.stderr = message.stderr);
+    message.malicious !== undefined && (obj.malicious = message.malicious);
+    if (message.locations) {
+      obj.locations = message.locations.map((e) => e);
+    } else {
+      obj.locations = [];
+    }
     return obj;
   },
 
@@ -141,8 +147,8 @@ export const InspectionResult = {
   ): InspectionResult {
     const message = createBaseInspectionResult();
     message.url = object.url ?? "";
-    message.stdout = object.stdout ?? "";
-    message.stderr = object.stderr ?? "";
+    message.malicious = object.malicious ?? false;
+    message.locations = object.locations?.map((e) => e) || [];
     return message;
   },
 };

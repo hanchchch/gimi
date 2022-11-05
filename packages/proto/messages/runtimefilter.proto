@@ -2,7 +2,6 @@ syntax = "proto3";
 option go_package = "./proto";
 package runtimefilter;
 
-
 service RuntimeFilterService {
   rpc Start(StartRequest) returns (StartResponse) {}
   rpc GetResult(GetResultRequest) returns (GetResultResponse) {}
@@ -25,8 +24,7 @@ message GetResultRequest {
 message GetResultResponse {
   string id = 1;
   string url = 2;
-  string stdout = 3;
-  string stderr = 4;
+  bool malicious = 3;
 }
 
 message SubResultRequest  {

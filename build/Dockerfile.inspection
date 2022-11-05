@@ -9,7 +9,15 @@ COPY packages /app/packages
 RUN go build -o /app/inspection /app/packages/inspection/cmd/inspection.go
 
 FROM golang:1.17-alpine as runtime
+WORKDIR /bin
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" > /etc/apk/repositories && \
+  echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
+RUN apk update && \
+  apk add chromium chromium-chromedriver
 
 COPY --from=build /app/inspection /bin/inspection
+
+ENV CHROME_DRIVER_PATH=/usr/lib/chromium/chromedriver
 
 CMD [ "/bin/inspection" ]

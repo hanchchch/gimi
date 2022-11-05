@@ -8,8 +8,8 @@ message InspectionArgs {
 
 message InspectionResult {
   string url = 1;
-  string stdout = 2;
-  string stderr = 3;
+  bool malicious = 2;
+  repeated string locations = 3;
 }
 
 message HandlerArgs {

@@ -1,14 +1,13 @@
 package chrome
 
 import (
+	"os"
 	"runtime"
 	"strings"
 
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
-
-const driverPath = "./drivers/chrome"
 
 type ChromeInspectResult struct {
 	Malicious bool
@@ -20,16 +19,20 @@ type ChromeClient struct {
 }
 
 func NewChromeClient() (*ChromeClient, error) {
-	service, err := selenium.NewChromeDriverService(strings.Join([]string{driverPath, runtime.GOARCH, runtime.GOOS}, "/"), 4444)
+	driverPath := os.Getenv("CHROME_DRIVER_PATH")
+	if driverPath == "" {
+		driverPath = strings.Join([]string{"./drivers/chrome", runtime.GOARCH, runtime.GOOS}, "/")
+	}
+	service, err := selenium.NewChromeDriverService(driverPath, 4444)
 	if err != nil {
 		return nil, err
 	}
 
 	caps := selenium.Capabilities{}
 	caps.AddChrome(chrome.Capabilities{Args: []string{
-		"window-size=1920x1080",
 		"disable-gpu",
-		// "--headless",
+		"--no-sandbox",
+		"--headless",
 	}})
 
 	driver, err := selenium.NewRemote(caps, "")
