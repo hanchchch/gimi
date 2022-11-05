@@ -5,6 +5,8 @@ import { testConfigProvider } from "../environments/environment.test-env";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
+const service = { find: jest.fn() };
+
 describe("AppController", () => {
   let app: TestingModule;
   let controller: AppController;
@@ -12,7 +14,10 @@ describe("AppController", () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService, testConfigProvider],
+      providers: [
+        { provide: AppService, useValue: service },
+        testConfigProvider,
+      ],
     }).compile();
 
     controller = app.get<AppController>(AppController);
@@ -20,16 +25,14 @@ describe("AppController", () => {
 
   describe("Find", () => {
     it("should return find", async () => {
-      const result = await controller.Find(
+      await controller.Find(
         { url: "url" },
         new Metadata(),
         /* @ts-ignore */
         {}
       );
 
-      expect(result).toBeDefined();
-      expect(result.url).toBeDefined();
-      expect(result.found).toBeDefined();
+      expect(service.find).toBeCalledWith({ url: "url" });
     });
   });
 });

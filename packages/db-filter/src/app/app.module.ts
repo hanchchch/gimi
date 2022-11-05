@@ -11,12 +11,19 @@ import { Blacklist } from "./blacklist.entity";
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      useFactory: async (config: ConfigService<EnvVars>) => ({
-        type: "postgres",
-        url: config.get("DB_URL"),
-        synchronize: config.get("DB_SYNC") || false,
-        autoLoadEntities: true,
-      }),
+      useFactory: async (config: ConfigService<EnvVars>) => {
+        const type = config.get("DB_TYPE") || "postgres";
+        const location =
+          type === "sqlite"
+            ? { database: config.get("DB_URL") }
+            : { url: config.get("DB_URL") };
+        return {
+          type,
+          ...location,
+          synchronize: config.get("DB_SYNC") || false,
+          autoLoadEntities: true,
+        };
+      },
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([Blacklist]),

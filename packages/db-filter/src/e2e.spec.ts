@@ -15,6 +15,8 @@ import { IDbFilterService } from "@proto/nestjs/dbfilter.interface";
 import { FindRequest } from "@proto/ts/messages/dbfilter";
 import { AppModule } from "./app/app.module";
 import { testConfigProvider } from "./environments/environment.test-env";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Blacklist } from "./app/blacklist.entity";
 
 const clientOptions = createClientOptions({});
 
@@ -60,6 +62,12 @@ describe("App", () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: getRepositoryToken(Blacklist),
+          useValue: { findOne: jest.fn(() => ({ found: true })) },
+        },
+      ],
       imports: [AppModule],
     })
       .overrideProvider(ConfigService)
@@ -95,7 +103,6 @@ describe("App", () => {
       const result = await firstValueFrom(controller.find({ url: "url" }));
 
       expect(result).toBeDefined();
-      expect(result.url).toBeDefined();
       expect(result.found).toBeDefined();
     });
   });
