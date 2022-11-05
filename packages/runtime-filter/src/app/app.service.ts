@@ -10,6 +10,7 @@ import {
 import { HandlerArgs, HandlerResult } from "@proto/ts/messages/inspection";
 import { InjectQueue } from "../queue/queue.decorators";
 import { QueueService } from "../queue/queue.service";
+import { ResultNotFoundException } from "./app.exceptions";
 
 @Injectable()
 export class AppService {
@@ -55,7 +56,7 @@ export class AppService {
     const { id } = params;
     const result = await this.get(id);
     if (!result) {
-      throw new NotFoundException();
+      throw new ResultNotFoundException(id);
     }
     return { id, ...result.result };
   }
@@ -64,7 +65,7 @@ export class AppService {
     const { id, timeout } = params;
     const result = await this.subGet(id, timeout);
     if (!result) {
-      throw new NotFoundException();
+      throw new ResultNotFoundException(id);
     }
     return { id, ...result.result };
   }

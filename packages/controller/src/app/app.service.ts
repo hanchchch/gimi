@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { InjectDbFilter } from "../db-filter/db-filter.decorators";
 import { DbFilterService } from "../db-filter/db-filter.service";
@@ -24,16 +24,37 @@ export class AppService {
     );
 
     if (found) {
-      // TODO return type
-      return { found, blacklist };
+      return { malicious: true };
     }
 
     const { id } = await firstValueFrom(
       this.runtimeFilterService.start({ url, os })
     );
-    const { stdout, stderr } = await firstValueFrom(
-      this.runtimeFilterService.subResult({ id, timeout })
-    );
-    return { stdout, stderr };
+
+    try {
+      const { malicious } = await firstValueFrom(
+        this.runtimeFilterService.subResult({ id, timeout })
+      );
+      return { id, malicious };
+    } catch (e) {
+      if (e.message.includes(`ResultNotFoundException`)) {
+        return { id };
+      }
+      throw e;
+    }
+  }
+
+  async fetchResult(id: string) {
+    try {
+      const { malicious } = await firstValueFrom(
+        this.runtimeFilterService.getResult({ id })
+      );
+      return { malicious };
+    } catch (e) {
+      if (e.message.includes(`ResultNotFoundException`)) {
+        throw new NotFoundException();
+      }
+      throw e;
+    }
   }
 }
