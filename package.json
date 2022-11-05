@@ -13,6 +13,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "core-js": "^3.6.5",
+    "loader-utils": "^2.0.3",
     "next": "13.0.0",
     "pg": "^8.8.0",
     "react": "18.2.0",
