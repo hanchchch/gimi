@@ -18,7 +18,11 @@ type ChromeClient struct {
 	result  ChromeInspectResult
 }
 
-func NewChromeClient() (*ChromeClient, error) {
+type ChromeClientOptions struct {
+	ChromeArgs []string
+}
+
+func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
 	driverPath := os.Getenv("CHROME_DRIVER_PATH")
 	if driverPath == "" {
 		driverPath = strings.Join([]string{"./drivers/chrome", runtime.GOARCH, runtime.GOOS}, "/")
@@ -29,11 +33,7 @@ func NewChromeClient() (*ChromeClient, error) {
 	}
 
 	caps := selenium.Capabilities{}
-	caps.AddChrome(chrome.Capabilities{Args: []string{
-		"disable-gpu",
-		"--no-sandbox",
-		"--headless",
-	}})
+	caps.AddChrome(chrome.Capabilities{Args: options.ChromeArgs})
 
 	driver, err := selenium.NewRemote(caps, "")
 	if err != nil {
@@ -47,38 +47,6 @@ func NewChromeClient() (*ChromeClient, error) {
 	}, nil
 }
 
-func (c *ChromeClient) InspectForms() error {
-	forms, err := c.driver.FindElements(selenium.ByCSSSelector, "form")
-	if err != nil {
-		return err
-	}
-
-	for _, form := range forms {
-		inputs, err := form.FindElements(selenium.ByCSSSelector, "input")
-		if err != nil {
-			continue
-		}
-
-		for _, input := range inputs {
-			input.SendKeys("test")
-		}
-
-		form.Submit()
-	}
-
-	return nil
-}
-
-func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
-	defer c.service.Stop()
-
-	if err := c.driver.Get(url); err != nil {
-		return c.result, err
-	}
-
-	if err := c.InspectForms(); err != nil {
-		return c.result, err
-	}
-
-	return c.result, nil
+func (c *ChromeClient) Run(url string) (ChromeInspectResult, error) {
+	return c.Inspect(url)
 }
