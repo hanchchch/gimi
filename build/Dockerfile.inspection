@@ -1,6 +1,8 @@
 FROM golang:1.17-alpine as build
 WORKDIR /app
 
+RUN apk add --update gcc musl-dev libpcap-dev
+
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
@@ -13,8 +15,7 @@ WORKDIR /bin
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" > /etc/apk/repositories && \
   echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
-RUN apk update && \
-  apk add chromium chromium-chromedriver
+RUN apk add --update chromium chromium-chromedriver libpcap-dev
 
 COPY --from=build /app/inspection /bin/inspection
 
