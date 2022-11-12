@@ -22,10 +22,7 @@ function createBaseBlacklist(): Blacklist {
 }
 
 export const Blacklist = {
-  encode(
-    message: Blacklist,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Blacklist, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
     }
@@ -70,9 +67,7 @@ export const Blacklist = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Blacklist>, I>>(
-    object: I
-  ): Blacklist {
+  fromPartial<I extends Exact<DeepPartial<Blacklist>, I>>(object: I): Blacklist {
     const message = createBaseBlacklist();
     message.url = object.url ?? "";
     message.detectedAt = object.detectedAt ?? "";
@@ -85,10 +80,7 @@ function createBaseFindRequest(): FindRequest {
 }
 
 export const FindRequest = {
-  encode(
-    message: FindRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FindRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
     }
@@ -123,9 +115,7 @@ export const FindRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FindRequest>, I>>(
-    object: I
-  ): FindRequest {
+  fromPartial<I extends Exact<DeepPartial<FindRequest>, I>>(object: I): FindRequest {
     const message = createBaseFindRequest();
     message.url = object.url ?? "";
     return message;
@@ -137,10 +127,7 @@ function createBaseFindResponse(): FindResponse {
 }
 
 export const FindResponse = {
-  encode(
-    message: FindResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FindResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.found === true) {
       writer.uint32(8).bool(message.found);
     }
@@ -174,9 +161,7 @@ export const FindResponse = {
   fromJSON(object: any): FindResponse {
     return {
       found: isSet(object.found) ? Boolean(object.found) : false,
-      blacklist: isSet(object.blacklist)
-        ? Blacklist.fromJSON(object.blacklist)
-        : undefined,
+      blacklist: isSet(object.blacklist) ? Blacklist.fromJSON(object.blacklist) : undefined,
     };
   },
 
@@ -184,21 +169,16 @@ export const FindResponse = {
     const obj: any = {};
     message.found !== undefined && (obj.found = message.found);
     message.blacklist !== undefined &&
-      (obj.blacklist = message.blacklist
-        ? Blacklist.toJSON(message.blacklist)
-        : undefined);
+      (obj.blacklist = message.blacklist ? Blacklist.toJSON(message.blacklist) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FindResponse>, I>>(
-    object: I
-  ): FindResponse {
+  fromPartial<I extends Exact<DeepPartial<FindResponse>, I>>(object: I): FindResponse {
     const message = createBaseFindResponse();
     message.found = object.found ?? false;
-    message.blacklist =
-      object.blacklist !== undefined && object.blacklist !== null
-        ? Blacklist.fromPartial(object.blacklist)
-        : undefined;
+    message.blacklist = (object.blacklist !== undefined && object.blacklist !== null)
+      ? Blacklist.fromPartial(object.blacklist)
+      : undefined;
     return message;
   },
 };
@@ -223,38 +203,19 @@ export class DbFilterServiceClientImpl implements DbFilterService {
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

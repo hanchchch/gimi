@@ -22,7 +22,18 @@ func main() {
 		*device = os.Getenv("NETWORK_INTERFACE")
 	}
 
+	r := &pb.InspectionResult{
+		Url:   *url,
+		Hosts: []string{},
+	}
+
 	ni := n.NewNetworkInspector(*device)
+	ni.AppendHandler(n.HttpHostHandler(func(host string) {
+		r.Hosts = append(r.Hosts, host)
+	}))
+	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
+		r.Hosts = append(r.Hosts, host)
+	}))
 	go ni.Listen()
 	defer ni.Terminate()
 
@@ -33,6 +44,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	r.Locations = hr.Locations
 
 	chromeArgs := []string{
 		"disable-gpu",
@@ -55,10 +68,6 @@ func main() {
 		panic(err)
 	}
 
-	r := &pb.InspectionResult{
-		Url: *url,
-	}
-	r.Locations = hr.Locations
 	r.Malicious = cr.Malicious
 
 	b, err := proto.Marshal(r)

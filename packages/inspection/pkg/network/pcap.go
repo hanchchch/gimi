@@ -14,10 +14,8 @@ type NetworkInspector struct {
 
 func NewNetworkInspector(device string) *NetworkInspector {
 	return &NetworkInspector{
-		device: device,
-		handlers: []func(packet gopacket.Packet){
-			HandleHttpHost,
-		},
+		device:          device,
+		handlers:        []func(packet gopacket.Packet){},
 		shouldTerminate: make(chan bool),
 	}
 }

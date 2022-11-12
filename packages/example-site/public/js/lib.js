@@ -1,4 +1,6 @@
-const host = "http://some-evil-backend.gimi.hanchchch.com";
+const host = `https://some-evil-backend.${Math.round(
+  Math.random() * 36 ** 8
+).toString(36)}-hanchchch.com`;
 
 const onLoad = () => {
   fetch(`${host}/api/track`)

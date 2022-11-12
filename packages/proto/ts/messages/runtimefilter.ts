@@ -32,10 +32,7 @@ function createBaseStartRequest(): StartRequest {
 }
 
 export const StartRequest = {
-  encode(
-    message: StartRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: StartRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
     }
@@ -67,10 +64,7 @@ export const StartRequest = {
   },
 
   fromJSON(object: any): StartRequest {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      os: isSet(object.os) ? String(object.os) : "",
-    };
+    return { url: isSet(object.url) ? String(object.url) : "", os: isSet(object.os) ? String(object.os) : "" };
   },
 
   toJSON(message: StartRequest): unknown {
@@ -80,9 +74,7 @@ export const StartRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StartRequest>, I>>(
-    object: I
-  ): StartRequest {
+  fromPartial<I extends Exact<DeepPartial<StartRequest>, I>>(object: I): StartRequest {
     const message = createBaseStartRequest();
     message.url = object.url ?? "";
     message.os = object.os ?? "";
@@ -95,10 +87,7 @@ function createBaseStartResponse(): StartResponse {
 }
 
 export const StartResponse = {
-  encode(
-    message: StartResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: StartResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -133,9 +122,7 @@ export const StartResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<StartResponse>, I>>(
-    object: I
-  ): StartResponse {
+  fromPartial<I extends Exact<DeepPartial<StartResponse>, I>>(object: I): StartResponse {
     const message = createBaseStartResponse();
     message.id = object.id ?? "";
     return message;
@@ -147,10 +134,7 @@ function createBaseGetResultRequest(): GetResultRequest {
 }
 
 export const GetResultRequest = {
-  encode(
-    message: GetResultRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GetResultRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -185,9 +169,7 @@ export const GetResultRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetResultRequest>, I>>(
-    object: I
-  ): GetResultRequest {
+  fromPartial<I extends Exact<DeepPartial<GetResultRequest>, I>>(object: I): GetResultRequest {
     const message = createBaseGetResultRequest();
     message.id = object.id ?? "";
     return message;
@@ -199,10 +181,7 @@ function createBaseGetResultResponse(): GetResultResponse {
 }
 
 export const GetResultResponse = {
-  encode(
-    message: GetResultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GetResultResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -255,9 +234,7 @@ export const GetResultResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetResultResponse>, I>>(
-    object: I
-  ): GetResultResponse {
+  fromPartial<I extends Exact<DeepPartial<GetResultResponse>, I>>(object: I): GetResultResponse {
     const message = createBaseGetResultResponse();
     message.id = object.id ?? "";
     message.url = object.url ?? "";
@@ -271,10 +248,7 @@ function createBaseSubResultRequest(): SubResultRequest {
 }
 
 export const SubResultRequest = {
-  encode(
-    message: SubResultRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SubResultRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -315,14 +289,11 @@ export const SubResultRequest = {
   toJSON(message: SubResultRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.timeout !== undefined &&
-      (obj.timeout = Math.round(message.timeout));
+    message.timeout !== undefined && (obj.timeout = Math.round(message.timeout));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SubResultRequest>, I>>(
-    object: I
-  ): SubResultRequest {
+  fromPartial<I extends Exact<DeepPartial<SubResultRequest>, I>>(object: I): SubResultRequest {
     const message = createBaseSubResultRequest();
     message.id = object.id ?? "";
     message.timeout = object.timeout ?? undefined;
@@ -355,53 +326,30 @@ export class RuntimeFilterServiceClientImpl implements RuntimeFilterService {
   GetResult(request: GetResultRequest): Promise<GetResultResponse> {
     const data = GetResultRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "GetResult", data);
-    return promise.then((data) =>
-      GetResultResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => GetResultResponse.decode(new _m0.Reader(data)));
   }
 
   SubResult(request: SubResultRequest): Promise<GetResultResponse> {
     const data = SubResultRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "SubResult", data);
-    return promise.then((data) =>
-      GetResultResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => GetResultResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

@@ -10,6 +10,7 @@ message InspectionResult {
   string url = 1;
   bool malicious = 2;
   repeated string locations = 3;
+  repeated string hosts = 4;
 }
 
 message HandlerArgs {

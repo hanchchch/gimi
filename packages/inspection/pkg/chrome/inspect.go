@@ -1,6 +1,8 @@
 package chrome
 
 import (
+	"time"
+
 	"github.com/tebeka/selenium"
 )
 
@@ -32,6 +34,8 @@ func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 	if err := c.driver.Get(url); err != nil {
 		return c.result, err
 	}
+
+	time.Sleep(1 * time.Second)
 
 	if err := c.TakeScreenshot(); err != nil {
 		return c.result, err

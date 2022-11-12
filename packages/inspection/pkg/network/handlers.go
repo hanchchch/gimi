@@ -4,10 +4,18 @@ import (
 	"github.com/google/gopacket"
 )
 
-func HandleHttpHost(packet gopacket.Packet) {
-	if req := ParseHTTP(packet); req != nil {
-		// fmt.Printf("%v\n", string(req.Host))
-		// TODO - do something with the http host
-		return
+func HttpHostHandler(callback func(string)) func(gopacket.Packet) {
+	return func(packet gopacket.Packet) {
+		if req := ParseHTTP(packet); req != nil {
+			callback(string(req.Host))
+		}
+	}
+}
+
+func DnsQueryHandler(callback func(string)) func(gopacket.Packet) {
+	return func(packet gopacket.Packet) {
+		if host := ParseDnsQuery(packet); host != nil {
+			callback(string(*host))
+		}
 	}
 }
