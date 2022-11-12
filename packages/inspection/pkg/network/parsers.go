@@ -48,7 +48,7 @@ func ParseDnsQuery(packet gopacket.Packet) *string {
 		ptr := 12
 		query := []byte{}
 		for int(dns[ptr]) != 0 {
-			query = append(query, dns[ptr:ptr+int(dns[ptr])+1]...)
+			query = append(query, dns[ptr+1:ptr+int(dns[ptr])+1]...)
 			query = append(query, '.')
 			ptr += int(dns[ptr]) + 1
 		}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	c "github.com/hanchchch/gimi/packages/inspection/pkg/chrome"
@@ -75,5 +76,5 @@ func main() {
 		panic(err)
 	}
 
-	println(string(b))
+	fmt.Printf("%v\n", string(b))
 }
