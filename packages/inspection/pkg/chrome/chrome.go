@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
@@ -17,6 +18,7 @@ type ChromeClient struct {
 	driver  selenium.WebDriver
 	service *selenium.Service
 	result  ChromeInspectResult
+	Payload string
 }
 
 type ChromeClientOptions struct {
@@ -45,6 +47,7 @@ func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
 		driver:  driver,
 		service: service,
 		result:  ChromeInspectResult{},
+		Payload: uuid.New().String(),
 	}, nil
 }
 

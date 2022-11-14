@@ -11,6 +11,7 @@ message InspectionResult {
   bool malicious = 2;
   repeated string locations = 3;
   repeated string hosts = 4;
+  repeated string sending_to = 5;
 }
 
 message HandlerArgs {

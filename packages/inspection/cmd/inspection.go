@@ -3,12 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/hanchchch/gimi/packages/inspection/pkg/aws"
 	c "github.com/hanchchch/gimi/packages/inspection/pkg/chrome"
 	h "github.com/hanchchch/gimi/packages/inspection/pkg/headless"
 	n "github.com/hanchchch/gimi/packages/inspection/pkg/network"
+	"github.com/hanchchch/gimi/packages/inspection/pkg/urls"
 	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 	"github.com/joho/godotenv"
 	"google.golang.org/protobuf/proto"
@@ -21,13 +25,24 @@ const (
 
 func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResult, c.ChromeInspectResult) {
 	r := &pb.InspectionResult{
-		Url:   url,
-		Hosts: []string{},
+		Url:       url,
+		Hosts:     []string{},
+		SendingTo: []string{},
+	}
+
+	hc := h.NewHeadlessClient()
+	cc, err := c.NewChromeClient(c.ChromeClientOptions{ChromeArgs: chromeArgs})
+	if err != nil {
+		panic(err)
 	}
 
 	ni := n.NewNetworkInspector(device)
-	ni.AppendHandler(n.HttpHostHandler(func(host string) {
-		r.Hosts = append(r.Hosts, host)
+	ni.AppendHandler(n.HttpHandler(func(req *http.Request) {
+		b, _ := ioutil.ReadAll(req.Body)
+		if strings.Contains(string(b), cc.Payload) {
+			r.SendingTo = append(r.SendingTo, req.URL.String())
+		}
+		r.Hosts = append(r.Hosts, string(req.Host))
 	}))
 	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
 		r.Hosts = append(r.Hosts, host)
@@ -35,19 +50,13 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	go ni.Listen()
 	defer ni.Terminate()
 
-	hr, err := h.NewHeadlessClient().Visit(h.VisitParams{
+	if hr, err := hc.Visit(h.VisitParams{
 		Method: "GET",
 		Url:    url,
-	})
-	if err != nil {
+	}); err != nil {
 		panic(err)
-	}
-
-	r.Locations = hr.Locations
-
-	cc, err := c.NewChromeClient(c.ChromeClientOptions{ChromeArgs: chromeArgs})
-	if err != nil {
-		panic(err)
+	} else {
+		r.Locations = hr.Locations
 	}
 
 	cr, err := cc.Run(url)
@@ -81,6 +90,7 @@ func output(r *pb.InspectionResult) {
 	}
 
 	fmt.Printf("%v\n", string(b))
+	// fmt.Printf("%v\n", r.String())
 }
 
 func main() {
@@ -110,7 +120,7 @@ func main() {
 		chromeArgs = append(chromeArgs, "user-agent="+*ua)
 	}
 
-	r, cr := inspect(*url, *device, chromeArgs)
+	r, cr := inspect(urls.EnsureProtocol(*url), *device, chromeArgs)
 
 	uploadScreenshot(*url, cr.Screenshot, awsAccessKey, awsSecretKey)
 

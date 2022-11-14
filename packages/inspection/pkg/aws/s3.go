@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/hanchchch/gimi/packages/inspection/pkg/urls"
 )
 
 type S3Client struct {
@@ -63,7 +63,7 @@ func (s *S3Client) Upload(bucket string, key string, reader io.Reader) error {
 func (s *S3Client) UploadScreenshot(bucket string, url string, data []byte) error {
 	return s.Upload(
 		bucket,
-		fmt.Sprintf("%v.png", strings.Split(url, "://")[1]),
+		fmt.Sprintf("%v.png", urls.TrimProtocol(url)),
 		ioutil.NopCloser(bytes.NewReader(data)),
 	)
 }

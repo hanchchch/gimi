@@ -12,6 +12,7 @@ export interface InspectionResult {
   malicious: boolean;
   locations: string[];
   hosts: string[];
+  sendingTo: string[];
 }
 
 export interface HandlerArgs {
@@ -72,7 +73,7 @@ export const InspectionArgs = {
 };
 
 function createBaseInspectionResult(): InspectionResult {
-  return { url: "", malicious: false, locations: [], hosts: [] };
+  return { url: "", malicious: false, locations: [], hosts: [], sendingTo: [] };
 }
 
 export const InspectionResult = {
@@ -88,6 +89,9 @@ export const InspectionResult = {
     }
     for (const v of message.hosts) {
       writer.uint32(34).string(v!);
+    }
+    for (const v of message.sendingTo) {
+      writer.uint32(42).string(v!);
     }
     return writer;
   },
@@ -111,6 +115,9 @@ export const InspectionResult = {
         case 4:
           message.hosts.push(reader.string());
           break;
+        case 5:
+          message.sendingTo.push(reader.string());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -125,6 +132,7 @@ export const InspectionResult = {
       malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
       locations: Array.isArray(object?.locations) ? object.locations.map((e: any) => String(e)) : [],
       hosts: Array.isArray(object?.hosts) ? object.hosts.map((e: any) => String(e)) : [],
+      sendingTo: Array.isArray(object?.sendingTo) ? object.sendingTo.map((e: any) => String(e)) : [],
     };
   },
 
@@ -142,6 +150,11 @@ export const InspectionResult = {
     } else {
       obj.hosts = [];
     }
+    if (message.sendingTo) {
+      obj.sendingTo = message.sendingTo.map((e) => e);
+    } else {
+      obj.sendingTo = [];
+    }
     return obj;
   },
 
@@ -151,6 +164,7 @@ export const InspectionResult = {
     message.malicious = object.malicious ?? false;
     message.locations = object.locations?.map((e) => e) || [];
     message.hosts = object.hosts?.map((e) => e) || [];
+    message.sendingTo = object.sendingTo?.map((e) => e) || [];
     return message;
   },
 };

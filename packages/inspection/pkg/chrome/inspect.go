@@ -7,22 +7,31 @@ import (
 )
 
 func (c *ChromeClient) InspectForms() error {
-	forms, err := c.driver.FindElements(selenium.ByCSSSelector, "form")
+	inputs, err := c.driver.FindElements(selenium.ByCSSSelector, "input")
 	if err != nil {
 		return err
 	}
 
-	for _, form := range forms {
-		inputs, err := form.FindElements(selenium.ByCSSSelector, "input")
-		if err != nil {
-			continue
-		}
+	buttons, err := c.driver.FindElements(selenium.ByCSSSelector, "button")
+	if err != nil {
+		return err
+	}
 
-		for _, input := range inputs {
-			input.SendKeys("test")
-		}
+	clickables, err := c.driver.FindElements(selenium.ByCSSSelector, "[onclick]:not([onclick=''])")
+	if err != nil {
+		return err
+	}
 
-		form.Submit()
+	for _, input := range inputs {
+		input.SendKeys(c.Payload)
+	}
+
+	for _, button := range buttons {
+		button.Click()
+	}
+
+	for _, clickable := range clickables {
+		clickable.Click()
 	}
 
 	return nil
