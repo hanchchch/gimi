@@ -34,9 +34,16 @@ func main() {
 		panic(err)
 	}
 
+	awsAccessKey := utils.Getenv("AWS_ACCESS_KEY_ID", "")
+	awsSecretKey := utils.Getenv("AWS_SECRET_ACCESS_KEY", "")
+
 	handler := func(args *pb.HandlerArgs) (*pb.HandlerResult, error) {
-		c, err := m.CreateTryContainer(&container.TryContainerConfig{
+		c, err := m.CreateInspectionContainer(&container.InspectionContainerConfig{
 			Args: args.Args,
+			Env: []string{
+				"AWS_ACCESS_KEY_ID=" + awsAccessKey,
+				"AWS_SECRET_ACCESS_KEY=" + awsSecretKey,
+			},
 		})
 		if err != nil {
 			return nil, fmt.Errorf("failed to create container: %w", err)
@@ -58,6 +65,7 @@ func main() {
 
 		r := &pb.InspectionResult{}
 		proto.Unmarshal(stdout, r)
+		fmt.Printf("result: %v\n", r.String())
 
 		return &pb.HandlerResult{
 			RequestId: args.RequestId,

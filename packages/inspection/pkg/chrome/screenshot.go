@@ -1,16 +1,12 @@
 package chrome
 
-import "io/ioutil"
-
-func (c *ChromeClient) TakeScreenshot() error {
+func (c *ChromeClient) TakeScreenshot(url string) error {
 	b, err := c.driver.Screenshot()
 	if err != nil {
 		return err
 	}
 
-	if err := ioutil.WriteFile("screenshot.png", b, 0644); err != nil {
-		return err
-	}
+	c.result.Screenshot = b
 
 	return nil
 }

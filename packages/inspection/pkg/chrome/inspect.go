@@ -37,7 +37,7 @@ func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 
 	time.Sleep(1 * time.Second)
 
-	if err := c.TakeScreenshot(); err != nil {
+	if err := c.TakeScreenshot(url); err != nil {
 		return c.result, err
 	}
 

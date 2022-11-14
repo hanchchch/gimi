@@ -10,7 +10,8 @@ import (
 )
 
 type ChromeInspectResult struct {
-	Malicious bool
+	Malicious  bool
+	Screenshot []byte
 }
 type ChromeClient struct {
 	driver  selenium.WebDriver

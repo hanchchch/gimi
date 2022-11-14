@@ -33,7 +33,7 @@ type ContainerConfig struct {
 	Image        string
 }
 
-type TryContainerConfig struct {
+type InspectionContainerConfig struct {
 	AttachStdin  bool
 	AttachStdout bool
 	AttachStderr bool
@@ -83,7 +83,7 @@ func (m *Manager) CreateContainer(config *ContainerConfig) (*Container, error) {
 	return c, nil
 }
 
-func (m *Manager) CreateTryContainer(config *TryContainerConfig) (*Container, error) {
+func (m *Manager) CreateInspectionContainer(config *InspectionContainerConfig) (*Container, error) {
 	return m.CreateContainer(&ContainerConfig{
 		AttachStdin:  config.AttachStdin,
 		AttachStdout: config.AttachStdout,
