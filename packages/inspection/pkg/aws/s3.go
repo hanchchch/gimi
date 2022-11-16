@@ -14,7 +14,8 @@ import (
 )
 
 type S3Client struct {
-	sess *session.Session
+	region string
+	sess   *session.Session
 }
 
 type S3ClientOptions struct {
@@ -40,7 +41,8 @@ func NewS3Client(options S3ClientOptions) (S3Client, error) {
 	}
 
 	return S3Client{
-		sess: sess,
+		sess:   sess,
+		region: options.Region,
 	}, nil
 }
 
@@ -60,10 +62,12 @@ func (s *S3Client) Upload(bucket string, key string, reader io.Reader) error {
 	return nil
 }
 
-func (s *S3Client) UploadScreenshot(bucket string, url string, data []byte) error {
-	return s.Upload(
+func (s *S3Client) UploadScreenshot(bucket string, url string, data []byte) (string, error) {
+	key := fmt.Sprintf("%v.png", urls.TrimProtocol(url))
+	err := s.Upload(
 		bucket,
-		fmt.Sprintf("%v.png", urls.TrimProtocol(url)),
+		key,
 		ioutil.NopCloser(bytes.NewReader(data)),
 	)
+	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", s.region, bucket, key), err
 }

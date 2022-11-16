@@ -6,12 +6,12 @@ RUN yarn global add @vercel/ncc
 
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install
+RUN yarn install --frozen-lockfile --production
 
 COPY *.json ./
 COPY ./packages/ ./packages/
 
-RUN npx nx bundle controller
+RUN cd packages/controller && ncc build src/main.ts -o ../../dist/packages/controller
 
 FROM node:14-alpine
 WORKDIR /app

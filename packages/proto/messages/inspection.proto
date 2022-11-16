@@ -9,9 +9,10 @@ message InspectionArgs {
 message InspectionResult {
   string url = 1;
   bool malicious = 2;
-  repeated string locations = 3;
-  repeated string hosts = 4;
-  repeated string sending_to = 5;
+  string screenshot = 3;
+  repeated string locations = 4;
+  repeated string hosts = 5;
+  repeated string sending_to = 6;
 }
 
 message HandlerArgs {

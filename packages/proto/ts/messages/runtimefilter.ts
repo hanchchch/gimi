@@ -20,6 +20,10 @@ export interface GetResultResponse {
   id: string;
   url: string;
   malicious: boolean;
+  screenshot: string;
+  locations: string[];
+  hosts: string[];
+  sendingTo: string[];
 }
 
 export interface SubResultRequest {
@@ -177,7 +181,7 @@ export const GetResultRequest = {
 };
 
 function createBaseGetResultResponse(): GetResultResponse {
-  return { id: "", url: "", malicious: false };
+  return { id: "", url: "", malicious: false, screenshot: "", locations: [], hosts: [], sendingTo: [] };
 }
 
 export const GetResultResponse = {
@@ -190,6 +194,18 @@ export const GetResultResponse = {
     }
     if (message.malicious === true) {
       writer.uint32(24).bool(message.malicious);
+    }
+    if (message.screenshot !== "") {
+      writer.uint32(34).string(message.screenshot);
+    }
+    for (const v of message.locations) {
+      writer.uint32(42).string(v!);
+    }
+    for (const v of message.hosts) {
+      writer.uint32(50).string(v!);
+    }
+    for (const v of message.sendingTo) {
+      writer.uint32(58).string(v!);
     }
     return writer;
   },
@@ -210,6 +226,18 @@ export const GetResultResponse = {
         case 3:
           message.malicious = reader.bool();
           break;
+        case 4:
+          message.screenshot = reader.string();
+          break;
+        case 5:
+          message.locations.push(reader.string());
+          break;
+        case 6:
+          message.hosts.push(reader.string());
+          break;
+        case 7:
+          message.sendingTo.push(reader.string());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -223,6 +251,10 @@ export const GetResultResponse = {
       id: isSet(object.id) ? String(object.id) : "",
       url: isSet(object.url) ? String(object.url) : "",
       malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
+      screenshot: isSet(object.screenshot) ? String(object.screenshot) : "",
+      locations: Array.isArray(object?.locations) ? object.locations.map((e: any) => String(e)) : [],
+      hosts: Array.isArray(object?.hosts) ? object.hosts.map((e: any) => String(e)) : [],
+      sendingTo: Array.isArray(object?.sendingTo) ? object.sendingTo.map((e: any) => String(e)) : [],
     };
   },
 
@@ -231,6 +263,22 @@ export const GetResultResponse = {
     message.id !== undefined && (obj.id = message.id);
     message.url !== undefined && (obj.url = message.url);
     message.malicious !== undefined && (obj.malicious = message.malicious);
+    message.screenshot !== undefined && (obj.screenshot = message.screenshot);
+    if (message.locations) {
+      obj.locations = message.locations.map((e) => e);
+    } else {
+      obj.locations = [];
+    }
+    if (message.hosts) {
+      obj.hosts = message.hosts.map((e) => e);
+    } else {
+      obj.hosts = [];
+    }
+    if (message.sendingTo) {
+      obj.sendingTo = message.sendingTo.map((e) => e);
+    } else {
+      obj.sendingTo = [];
+    }
     return obj;
   },
 
@@ -239,6 +287,10 @@ export const GetResultResponse = {
     message.id = object.id ?? "";
     message.url = object.url ?? "";
     message.malicious = object.malicious ?? false;
+    message.screenshot = object.screenshot ?? "";
+    message.locations = object.locations?.map((e) => e) || [];
+    message.hosts = object.hosts?.map((e) => e) || [];
+    message.sendingTo = object.sendingTo?.map((e) => e) || [];
     return message;
   },
 };

@@ -25,6 +25,10 @@ message GetResultResponse {
   string id = 1;
   string url = 2;
   bool malicious = 3;
+  string screenshot = 4;
+  repeated string locations = 5;
+  repeated string hosts = 6;
+  repeated string sending_to = 7;
 }
 
 message SubResultRequest  {

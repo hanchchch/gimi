@@ -32,10 +32,10 @@ export class AppService {
     );
 
     try {
-      const { malicious } = await firstValueFrom(
+      const result = await firstValueFrom(
         this.runtimeFilterService.subResult({ id, timeout })
       );
-      return { id, malicious };
+      return { id, ...result };
     } catch (e) {
       if (e.message.includes(`ResultNotFoundException`)) {
         return { id };
@@ -46,10 +46,10 @@ export class AppService {
 
   async fetchResult(id: string) {
     try {
-      const { malicious } = await firstValueFrom(
+      const result = await firstValueFrom(
         this.runtimeFilterService.getResult({ id })
       );
-      return { malicious };
+      return { id, ...result };
     } catch (e) {
       if (e.message.includes(`ResultNotFoundException`)) {
         throw new NotFoundException();

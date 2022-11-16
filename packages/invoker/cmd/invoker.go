@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"sync"
 	"time"
@@ -12,6 +13,10 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
+)
+
+const (
+	bound = "-----"
 )
 
 func main() {
@@ -49,7 +54,7 @@ func main() {
 			return nil, fmt.Errorf("failed to create container: %w", err)
 		}
 
-		if err := c.Run(10 * time.Second); err != nil {
+		if err := c.Run(60 * time.Second); err != nil {
 			return nil, fmt.Errorf("failed to run container: %w", err)
 		}
 
@@ -64,7 +69,7 @@ func main() {
 		}
 
 		r := &pb.InspectionResult{}
-		proto.Unmarshal(stdout, r)
+		proto.Unmarshal(bytes.Split(stdout, []byte(bound))[1], r)
 		fmt.Printf("result: %v\n", r.String())
 
 		return &pb.HandlerResult{

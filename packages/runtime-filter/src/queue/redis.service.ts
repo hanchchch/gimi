@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { HandlerArgs } from "@proto/ts/messages/inspection";
 import { createClient } from "redis";
 import { EnvVars } from "../environments/environment.interface";
 import { QueueService } from "./queue.service";

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -19,8 +20,7 @@ import (
 )
 
 const (
-	s3region = "ap-northeast-2"
-	s3bucket = "gimi-screenshots"
+	bound = "-----"
 )
 
 func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResult, c.ChromeInspectResult) {
@@ -38,13 +38,16 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 
 	ni := n.NewNetworkInspector(device)
 	ni.AppendHandler(n.HttpHandler(func(req *http.Request) {
+		log.Printf("captured - http - %v %v%v", req.Method, req.Host, req.URL.String())
 		b, _ := ioutil.ReadAll(req.Body)
 		if strings.Contains(string(b), cc.Payload) {
+			log.Printf("captured - input data - %v %v%v", req.Method, req.Host, req.URL.String())
 			r.SendingTo = append(r.SendingTo, req.URL.String())
 		}
 		r.Hosts = append(r.Hosts, string(req.Host))
 	}))
 	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
+		log.Printf("captured - dns - %v", host)
 		r.Hosts = append(r.Hosts, host)
 	}))
 	go ni.Listen()
@@ -69,7 +72,7 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	return r, cr
 }
 
-func uploadScreenshot(url string, screenshot []byte, accessKey string, secretKey string) {
+func uploadScreenshot(url string, screenshot []byte, s3region string, s3bucket string, accessKey string, secretKey string) string {
 	if s3, err := aws.NewS3Client(aws.S3ClientOptions{
 		AccessKeyId:     accessKey,
 		SecretAccessKey: secretKey,
@@ -77,20 +80,22 @@ func uploadScreenshot(url string, screenshot []byte, accessKey string, secretKey
 	}); err != nil {
 		panic(err)
 	} else {
-		if err := s3.UploadScreenshot(s3bucket, url, screenshot); err != nil {
+		location, err := s3.UploadScreenshot(s3bucket, url, screenshot)
+		log.Printf("uploaded screenshot - %v", location)
+		if err != nil {
 			panic(err)
 		}
+		return location
 	}
 }
 
 func output(r *pb.InspectionResult) {
+	log.Printf("result - %v", r.String())
 	b, err := proto.Marshal(r)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("%v\n", string(b))
-	// fmt.Printf("%v\n", r.String())
+	fmt.Printf("%v%v", bound, string(b))
 }
 
 func main() {
@@ -99,6 +104,8 @@ func main() {
 	url := flag.String("url", "", "target url")
 	device := flag.String("device", "", "network interface")
 	ua := flag.String("user-agent", "", "user agent")
+	s3region := flag.String("s3-region", "ap-northeast-2", "s3 region")
+	s3bucket := flag.String("s3-bucket", "gimi-screenshots", "s3 bucket")
 
 	flag.Parse()
 
@@ -122,7 +129,7 @@ func main() {
 
 	r, cr := inspect(urls.EnsureProtocol(*url), *device, chromeArgs)
 
-	uploadScreenshot(*url, cr.Screenshot, awsAccessKey, awsSecretKey)
+	r.Screenshot = uploadScreenshot(*url, cr.Screenshot, *s3region, *s3bucket, awsAccessKey, awsSecretKey)
 
 	output(r)
 }
