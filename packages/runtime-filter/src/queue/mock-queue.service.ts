@@ -6,18 +6,27 @@ export class MockQueueService implements QueueService {
     return Promise.resolve();
   }
 
-  get(key: string[]): Promise<string | null> {
+  get(key: string[]): Promise<Buffer | null> {
     return Promise.resolve(
-      new TextDecoder().decode(
-        HandlerResult.encode({
-          requestId: "",
-          result: { url: "", malicious: false, locations: [] },
-        }).finish()
+      Buffer.from(
+        new TextDecoder().decode(
+          HandlerResult.encode({
+            requestId: "",
+            result: {
+              url: "",
+              malicious: false,
+              screenshot: "",
+              locations: [],
+              sendingTo: [],
+              hosts: [],
+            },
+          }).finish()
+        )
       )
     );
   }
 
-  subOnce(key: string[], timeout: number): Promise<string | null> {
+  subOnce(key: string[], timeout: number): Promise<Buffer | null> {
     return this.get(key);
   }
 }

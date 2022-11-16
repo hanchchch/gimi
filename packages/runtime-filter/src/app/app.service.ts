@@ -25,22 +25,22 @@ export class AppService {
   }
 
   async get(id: string): Promise<HandlerResult | null> {
-    const str = await this.queue.get(["results", id]);
-    if (!str) {
+    const buf = await this.queue.get(["results", id]);
+    if (!buf) {
       return null;
     }
-    return HandlerResult.decode(new TextEncoder().encode(str));
+    return HandlerResult.decode(buf);
   }
 
   async subGet(
     id: string,
     timeout: number = this.defaultSubTimeout
   ): Promise<HandlerResult | null> {
-    const str = await this.queue.subOnce(["results", "pub", id], timeout);
-    if (!str) {
+    const buf = await this.queue.subOnce(["results", "pub", id], timeout);
+    if (!buf) {
       return null;
     }
-    return HandlerResult.decode(new TextEncoder().encode(str));
+    return HandlerResult.decode(buf);
   }
 
   async start(params: StartRequest): Promise<StartResponse> {
