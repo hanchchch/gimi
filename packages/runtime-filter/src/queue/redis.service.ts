@@ -33,24 +33,4 @@ export class RedisService implements OnModuleInit, QueueService {
       returnBuffers: true,
     });
   }
-
-  async subOnce(key: string[], timeout: number): Promise<Buffer | null> {
-    const builtKey = this.buildKey(...key);
-    const message = await Promise.race([
-      new Promise<Buffer>((resolve, reject) => {
-        this.redisClient
-          .subscribe(
-            builtKey,
-            (message) => {
-              resolve(message);
-            },
-            true
-          )
-          .catch(reject);
-      }),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), timeout)),
-    ]);
-    await this.redisClient.unsubscribe(builtKey);
-    return message;
-  }
 }

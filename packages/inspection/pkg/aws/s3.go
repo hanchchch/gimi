@@ -69,5 +69,5 @@ func (s *S3Client) UploadScreenshot(bucket string, url string, data []byte) (str
 		key,
 		ioutil.NopCloser(bytes.NewReader(data)),
 	)
-	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", s.region, bucket, key), err
+	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucket, s.region, key), err
 }

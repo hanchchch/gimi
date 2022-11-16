@@ -8,7 +8,6 @@ import { InspectParams } from "./app.dto";
 
 @Injectable()
 export class AppService {
-  private defaultTimeout = 1000;
   constructor(
     @InjectRuntimeFilter()
     private readonly runtimeFilterService: RuntimeFilterService,
@@ -17,7 +16,7 @@ export class AppService {
   ) {}
 
   async inspect(params: InspectParams) {
-    const { url, os, timeout = this.defaultTimeout } = params;
+    const { url, os } = params;
 
     const { found, blacklist } = await firstValueFrom(
       this.dbFilterService.find({ url })
@@ -31,17 +30,7 @@ export class AppService {
       this.runtimeFilterService.start({ url, os })
     );
 
-    try {
-      const result = await firstValueFrom(
-        this.runtimeFilterService.subResult({ id, timeout })
-      );
-      return { id, ...result };
-    } catch (e) {
-      if (e.message.includes(`ResultNotFoundException`)) {
-        return { id };
-      }
-      throw e;
-    }
+    return { id };
   }
 
   async fetchResult(id: string) {

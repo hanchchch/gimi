@@ -26,11 +26,6 @@ export interface GetResultResponse {
   sendingTo: string[];
 }
 
-export interface SubResultRequest {
-  id: string;
-  timeout?: number | undefined;
-}
-
 function createBaseStartRequest(): StartRequest {
   return { url: "", os: "" };
 }
@@ -295,68 +290,9 @@ export const GetResultResponse = {
   },
 };
 
-function createBaseSubResultRequest(): SubResultRequest {
-  return { id: "", timeout: undefined };
-}
-
-export const SubResultRequest = {
-  encode(message: SubResultRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.timeout !== undefined) {
-      writer.uint32(16).int32(message.timeout);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SubResultRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSubResultRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.string();
-          break;
-        case 2:
-          message.timeout = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SubResultRequest {
-    return {
-      id: isSet(object.id) ? String(object.id) : "",
-      timeout: isSet(object.timeout) ? Number(object.timeout) : undefined,
-    };
-  },
-
-  toJSON(message: SubResultRequest): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.timeout !== undefined && (obj.timeout = Math.round(message.timeout));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<SubResultRequest>, I>>(object: I): SubResultRequest {
-    const message = createBaseSubResultRequest();
-    message.id = object.id ?? "";
-    message.timeout = object.timeout ?? undefined;
-    return message;
-  },
-};
-
 export interface RuntimeFilterService {
   Start(request: StartRequest): Promise<StartResponse>;
   GetResult(request: GetResultRequest): Promise<GetResultResponse>;
-  SubResult(request: SubResultRequest): Promise<GetResultResponse>;
 }
 
 export class RuntimeFilterServiceClientImpl implements RuntimeFilterService {
@@ -367,7 +303,6 @@ export class RuntimeFilterServiceClientImpl implements RuntimeFilterService {
     this.rpc = rpc;
     this.Start = this.Start.bind(this);
     this.GetResult = this.GetResult.bind(this);
-    this.SubResult = this.SubResult.bind(this);
   }
   Start(request: StartRequest): Promise<StartResponse> {
     const data = StartRequest.encode(request).finish();
@@ -378,12 +313,6 @@ export class RuntimeFilterServiceClientImpl implements RuntimeFilterService {
   GetResult(request: GetResultRequest): Promise<GetResultResponse> {
     const data = GetResultRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "GetResult", data);
-    return promise.then((data) => GetResultResponse.decode(new _m0.Reader(data)));
-  }
-
-  SubResult(request: SubResultRequest): Promise<GetResultResponse> {
-    const data = SubResultRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SubResult", data);
     return promise.then((data) => GetResultResponse.decode(new _m0.Reader(data)));
   }
 }

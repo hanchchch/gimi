@@ -103,12 +103,6 @@ func (l *RedisListener) Listen() error {
 			log.Printf("error while lpush: %v", err)
 			continue
 		}
-
-		_, err = l.redis.Publish(ctx, l.ResultPubKey(args.RequestId), resp).Result()
-		if err != nil {
-			log.Printf("error while publish: %v", err)
-			continue
-		}
 	}
 }
 

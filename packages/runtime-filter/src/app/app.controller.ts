@@ -6,7 +6,6 @@ import {
   GetResultResponse,
   StartRequest,
   StartResponse,
-  SubResultRequest,
 } from "@proto/ts/messages/runtimefilter";
 import { AppService } from "./app.service";
 
@@ -30,15 +29,6 @@ export class AppController {
     call: ServerUnaryCall<any, any>
   ): Promise<GetResultResponse> {
     return this.appService.getResult(data);
-  }
-
-  @GrpcMethod("RuntimeFilterService", "SubResult")
-  async SubResult(
-    data: SubResultRequest,
-    metadata: Metadata,
-    call: ServerUnaryCall<any, any>
-  ): Promise<GetResultResponse> {
-    return this.appService.subResult(data);
   }
 
   @Post(`start`)

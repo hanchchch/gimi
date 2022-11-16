@@ -5,7 +5,6 @@ package runtimefilter;
 service RuntimeFilterService {
   rpc Start(StartRequest) returns (StartResponse) {}
   rpc GetResult(GetResultRequest) returns (GetResultResponse) {}
-  rpc SubResult(SubResultRequest) returns (GetResultResponse) {}
 }
 
 message StartRequest {
@@ -29,9 +28,4 @@ message GetResultResponse {
   repeated string locations = 5;
   repeated string hosts = 6;
   repeated string sending_to = 7;
-}
-
-message SubResultRequest  {
-  string id = 1;
-  optional int32 timeout = 2;
 }

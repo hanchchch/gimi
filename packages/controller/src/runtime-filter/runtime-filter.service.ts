@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import {
   StartRequest,
   GetResultRequest,
-  SubResultRequest,
 } from "@proto/ts/messages/runtimefilter";
 import { IRuntimeFilterService } from "@proto/nestjs/runtimefilter.interface";
 import { ClientGrpc } from "@nestjs/microservices";
@@ -26,9 +25,5 @@ export class RuntimeFilterService {
 
   getResult(data: GetResultRequest) {
     return this.service.GetResult(data);
-  }
-
-  subResult(data: SubResultRequest) {
-    return this.service.SubResult(data);
   }
 }
