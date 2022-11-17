@@ -69,7 +69,11 @@ func main() {
 		}
 
 		r := &pb.InspectionResult{}
-		if err := proto.Unmarshal(bytes.Split(stdout, []byte(bound))[1], r); err != nil {
+		splited := bytes.Split(stdout, []byte(bound))
+		if len(splited) < 2 {
+			return nil, fmt.Errorf("failed to parse stdout: %s", stdout)
+		}
+		if err := proto.Unmarshal(splited[1], r); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal inspection result: %w", err)
 		}
 		fmt.Printf("result: %v\n", r.String())
