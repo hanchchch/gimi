@@ -19,6 +19,7 @@ export class MockQueueService implements QueueService {
               locations: [],
               sendingTo: [],
               hosts: [],
+              urls: [],
             },
           }).finish()
         )
