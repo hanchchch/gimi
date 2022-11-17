@@ -58,7 +58,7 @@ func main() {
 			return nil, fmt.Errorf("failed to run container: %w", err)
 		}
 
-		stdout, _, err := c.Logs()
+		stdout, stderr, err := c.Logs()
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get logs from container: %w", err)
@@ -71,7 +71,7 @@ func main() {
 		r := &pb.InspectionResult{}
 		splited := bytes.Split(stdout, []byte(bound))
 		if len(splited) < 2 {
-			return nil, fmt.Errorf("failed to parse stdout: %s", stdout)
+			return nil, fmt.Errorf("failed to parse stdout:\n%s\n\nstderr:\n%s", stdout, stderr)
 		}
 		if err := proto.Unmarshal(splited[1], r); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal inspection result: %w", err)

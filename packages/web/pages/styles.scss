@@ -35,6 +35,11 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    Liberation Mono, Courier New, monospace;
+  overflow: scroll;
+}
 
 $main: rgba(55, 65, 81, 1);
 

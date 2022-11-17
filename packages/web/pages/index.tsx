@@ -44,10 +44,16 @@ export function Index() {
               {requestId && !data?.result && !data?.error && (
                 <div>Inspecting...</div>
               )}
-              {data?.error && <div>Error: {data.error}</div>}
+              {data?.error && <pre>Error: {data.error}</pre>}
               {data?.result && (
                 <table>
                   <tbody>
+                    <tr>
+                      <th>original url is...</th>
+                    </tr>
+                    <tr>
+                      <td>{data.url}</td>
+                    </tr>
                     <tr>
                       <th>redirects you to...</th>
                     </tr>
@@ -57,21 +63,24 @@ export function Index() {
                       </tr>
                     ))}
                     <tr>
-                      <th>trys to send your data to...</th>
+                      <th>sends your data to...</th>
                     </tr>
-                    {data.result.sendingTo.map((url) => (
+                    {data.result.sendingTo?.map((url) => (
                       <tr key={url}>
                         <td>{url}</td>
                       </tr>
                     ))}
                     <tr>
-                      <th>has communicated with...</th>
+                      <th>communicates with...</th>
                     </tr>
                     {data.result.hosts.map((host) => (
                       <tr key={host}>
                         <td>{host}</td>
                       </tr>
                     ))}
+                    <tr>
+                      <th>requests to...</th>
+                    </tr>
                     {data.result.urls.map((url) => (
                       <tr key={url}>
                         <td>{url}</td>
