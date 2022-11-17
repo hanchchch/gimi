@@ -33,9 +33,7 @@ describe("AppService", () => {
       const result = await service.getResult({ id: "id" });
 
       expect(result).toBeDefined();
-      expect(result.id).toBeDefined();
-      expect(result.url).toBeDefined();
-      expect(result.malicious).toBeDefined();
+      expect(result.result).toBeDefined();
     });
   });
 });

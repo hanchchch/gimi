@@ -48,9 +48,7 @@ describe("AppController", () => {
       );
 
       expect(result).toBeDefined();
-      expect(result.id).toBeDefined();
-      expect(result.url).toBeDefined();
-      expect(result.malicious).toBeDefined();
+      expect(result.result).toBeDefined();
     });
   });
 });
