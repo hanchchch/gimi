@@ -13,6 +13,7 @@ export interface InspectionResult {
   screenshot: string;
   locations: string[];
   hosts: string[];
+  urls: string[];
   sendingTo: string[];
 }
 
@@ -75,7 +76,7 @@ export const InspectionArgs = {
 };
 
 function createBaseInspectionResult(): InspectionResult {
-  return { url: "", malicious: false, screenshot: "", locations: [], hosts: [], sendingTo: [] };
+  return { url: "", malicious: false, screenshot: "", locations: [], hosts: [], urls: [], sendingTo: [] };
 }
 
 export const InspectionResult = {
@@ -95,8 +96,11 @@ export const InspectionResult = {
     for (const v of message.hosts) {
       writer.uint32(42).string(v!);
     }
-    for (const v of message.sendingTo) {
+    for (const v of message.urls) {
       writer.uint32(50).string(v!);
+    }
+    for (const v of message.sendingTo) {
+      writer.uint32(58).string(v!);
     }
     return writer;
   },
@@ -124,6 +128,9 @@ export const InspectionResult = {
           message.hosts.push(reader.string());
           break;
         case 6:
+          message.urls.push(reader.string());
+          break;
+        case 7:
           message.sendingTo.push(reader.string());
           break;
         default:
@@ -141,6 +148,7 @@ export const InspectionResult = {
       screenshot: isSet(object.screenshot) ? String(object.screenshot) : "",
       locations: Array.isArray(object?.locations) ? object.locations.map((e: any) => String(e)) : [],
       hosts: Array.isArray(object?.hosts) ? object.hosts.map((e: any) => String(e)) : [],
+      urls: Array.isArray(object?.urls) ? object.urls.map((e: any) => String(e)) : [],
       sendingTo: Array.isArray(object?.sendingTo) ? object.sendingTo.map((e: any) => String(e)) : [],
     };
   },
@@ -160,6 +168,11 @@ export const InspectionResult = {
     } else {
       obj.hosts = [];
     }
+    if (message.urls) {
+      obj.urls = message.urls.map((e) => e);
+    } else {
+      obj.urls = [];
+    }
     if (message.sendingTo) {
       obj.sendingTo = message.sendingTo.map((e) => e);
     } else {
@@ -175,6 +188,7 @@ export const InspectionResult = {
     message.screenshot = object.screenshot ?? "";
     message.locations = object.locations?.map((e) => e) || [];
     message.hosts = object.hosts?.map((e) => e) || [];
+    message.urls = object.urls?.map((e) => e) || [];
     message.sendingTo = object.sendingTo?.map((e) => e) || [];
     return message;
   },

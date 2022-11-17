@@ -28,6 +28,7 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 		Url:       url,
 		Hosts:     []string{},
 		SendingTo: []string{},
+		Urls:      []string{},
 	}
 
 	hc := h.NewHeadlessClient()
@@ -38,13 +39,17 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 
 	ni := n.NewNetworkInspector(device)
 	ni.AppendHandler(n.HttpHandler(func(req *http.Request) {
-		log.Printf("captured - http - %v %v%v", req.Method, req.Host, req.URL.String())
+		url := req.URL.String()
+		if strings.HasPrefix(url, "/") {
+			url = req.Host + url
+		}
+		log.Printf("captured - http - %v %v", req.Method, url)
 		b, _ := ioutil.ReadAll(req.Body)
 		if strings.Contains(string(b), cc.Payload) {
-			log.Printf("captured - input data - %v %v%v", req.Method, req.Host, req.URL.String())
-			r.SendingTo = append(r.SendingTo, req.URL.String())
+			log.Printf("captured - input data - %v %v", req.Method, url)
+			r.SendingTo = append(r.SendingTo, url)
 		}
-		r.Hosts = append(r.Hosts, string(req.Host))
+		r.Urls = append(r.Urls, url)
 	}))
 	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
 		log.Printf("captured - dns - %v", host)

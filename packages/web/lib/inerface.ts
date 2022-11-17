@@ -7,6 +7,7 @@ export interface Inspection {
     screenshot: string;
     hosts: string[];
     locations: string[];
+    urls: string[];
     sendingTo: string[];
   } | null;
   error: string | null;

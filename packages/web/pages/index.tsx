@@ -72,6 +72,11 @@ export function Index() {
                         <td>{host}</td>
                       </tr>
                     ))}
+                    {data.result.urls.map((url) => (
+                      <tr key={url}>
+                        <td>{url}</td>
+                      </tr>
+                    ))}
                     <tr>
                       <th>looks like...</th>
                     </tr>

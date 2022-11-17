@@ -12,7 +12,8 @@ message InspectionResult {
   string screenshot = 3;
   repeated string locations = 4;
   repeated string hosts = 5;
-  repeated string sending_to = 6;
+  repeated string urls = 6;
+  repeated string sending_to = 7;
 }
 
 message HandlerArgs {
