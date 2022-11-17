@@ -8,6 +8,7 @@ ts: ts/messages/runtimefilter.pb.ts ts/messages/inspection.pb.ts
 
 clean:
 	rm -f go/messages/*.pb.go
+	rm -f ts/messages/*.ts
 
 go/messages/runtimefilter.pb.go:
 	protoc \

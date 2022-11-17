@@ -49,9 +49,10 @@ export class InspectionService {
 
     if (!inspection.result) {
       try {
-        inspection.result = await firstValueFrom(
+        const result = await firstValueFrom(
           this.runtimeFilterService.getResult({ id })
         );
+        inspection.result = { ...result.result };
         await this.inspectionRepository.update(id, { ...inspection });
       } catch (e) {
         if (!e.message.includes(`ResultNotFoundException`)) {

@@ -45,6 +45,6 @@ export class AppService {
     if (!result) {
       throw new ResultNotFoundException(id);
     }
-    return { id, ...result.result };
+    return { ...result };
   }
 }

@@ -2,6 +2,8 @@ syntax = "proto3";
 option go_package = "./proto";
 package runtimefilter;
 
+import "messages/inspection.proto";
+
 service RuntimeFilterService {
   rpc Start(StartRequest) returns (StartResponse) {}
   rpc GetResult(GetResultRequest) returns (GetResultResponse) {}
@@ -21,11 +23,5 @@ message GetResultRequest {
 }
 
 message GetResultResponse {
-  string id = 1;
-  string url = 2;
-  bool malicious = 3;
-  string screenshot = 4;
-  repeated string locations = 5;
-  repeated string hosts = 6;
-  repeated string sending_to = 7;
+  inspection.InspectionResult result = 1;
 }
