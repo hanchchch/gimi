@@ -6,14 +6,14 @@ services:
     ports:
       - "6379:6379"
 
-  blacklist-db:
+  db:
     image: postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=blacklist
-      - POSTGRES_PASSWORD=blacklist
-      - POSTGRES_DB=blacklist
+      - POSTGRES_USER=gimi
+      - POSTGRES_PASSWORD=gimi
+      - POSTGRES_DB=gimi
 
   invoker-linux:
     build:
@@ -26,6 +26,8 @@ services:
     environment:
       - REDIS_URL=redis://message-queue:6379
       - HTTP_ADDR=:5001
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     links:
       - message-queue
 
@@ -41,18 +43,6 @@ services:
     links:
       - message-queue
 
-  db-filter:
-    build:
-      dockerfile: build/Dockerfile.db-filter
-      context: .
-    ports:
-      - "50052:50052"
-    environment:
-      - PORT=50052
-      - DB_URL=postgres://blacklist:blacklist@blacklist-db:5432/blacklist
-    links:
-      - blacklist-db
-
   controller:
     build:
       dockerfile: build/Dockerfile.controller
@@ -61,8 +51,7 @@ services:
       - "3000:3000"
     environment:
       - RUNTIME_FILTER_URL=runtime-filter:50051
-      - DB_FILTER_URL=db-filter:50052
       - PORT=3000
+      - DB_URL=postgres://gimi:gimi@db:5432/gimi
     links:
       - runtime-filter
-      - db-filter
