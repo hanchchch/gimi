@@ -1,0 +1,19 @@
+FROM node:14 AS builder
+WORKDIR /app
+
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install --frozen-lockfile
+
+COPY *.json ./
+COPY ./packages/ ./packages/
+
+RUN ./node_modules/.bin/nx export web
+
+FROM node:14-alpine
+WORKDIR /app
+
+COPY --from=builder /app/dist/packages/web .
+RUN yarn install
+
+ENTRYPOINT [ "./node_modules/.bin/next", "start", "-p", "4200" ]

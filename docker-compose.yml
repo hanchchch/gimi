@@ -56,3 +56,10 @@ services:
       - DB_SYNC=true
     links:
       - runtime-filter
+
+  web:
+    build:
+      dockerfile: build/Dockerfile.web
+      context: .
+    ports:
+      - "4200:4200"
