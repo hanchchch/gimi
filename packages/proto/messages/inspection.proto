@@ -23,4 +23,5 @@ message HandlerArgs {
 message HandlerResult {
   string request_id = 1;
   InspectionResult result = 2;
+  optional string error = 3;
 }

@@ -18,6 +18,9 @@ export class Inspection extends BaseEntity {
   @Column({ type: "json", nullable: true })
   result: InspectionResult | null;
 
+  @Column({ nullable: true })
+  error: string | null;
+
   @CreateDateColumn()
   detectedAt: Date;
 }

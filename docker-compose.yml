@@ -53,5 +53,6 @@ services:
       - RUNTIME_FILTER_URL=runtime-filter:50051
       - PORT=3000
       - DB_URL=postgres://gimi:gimi@db:5432/gimi
+      - DB_SYNC=true
     links:
       - runtime-filter

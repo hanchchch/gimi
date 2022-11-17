@@ -9,5 +9,6 @@ export interface Inspection {
     locations: string[];
     sendingTo: string[];
   } | null;
+  error: string | null;
   detectedAt: string;
 }

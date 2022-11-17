@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
 import { useFetchInspection, useInspect } from "../lib/api";
 import styles from "./index.module.scss";
 
@@ -43,7 +41,10 @@ export function Index() {
           <div id={styles.result} className="card shadow">
             <div className={styles.wrapper}>
               <h2>Result</h2>
-              {requestId && !data?.result && <div>Inspecting...</div>}
+              {requestId && !data?.result && !data?.error && (
+                <div>Inspecting...</div>
+              )}
+              {data?.error && <div>Error: {data.error}</div>}
               {data?.result && (
                 <table>
                   <tbody>

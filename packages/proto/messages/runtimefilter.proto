@@ -24,4 +24,5 @@ message GetResultRequest {
 
 message GetResultResponse {
   inspection.InspectionResult result = 1;
+  optional string error = 2;
 }

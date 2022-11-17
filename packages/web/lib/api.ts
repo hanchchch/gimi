@@ -16,7 +16,7 @@ export const useFetchInspection = (
     {
       enabled: !!requestId,
       refetchInterval(data, query) {
-        return !data?.result ? 1000 : false;
+        return data?.result || data?.error ? false : 1000;
       },
       ...options,
     }

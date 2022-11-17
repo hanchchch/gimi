@@ -89,7 +89,11 @@ func (l *RedisListener) Listen() error {
 		data, err := l.callback(args)
 		if err != nil {
 			log.Printf("error while processing request: %v", err)
-			continue
+			estr := err.Error()
+			data = &pb.HandlerResult{
+				RequestId: args.RequestId,
+				Error:     &estr,
+			}
 		}
 
 		resp, err := proto.Marshal(data)

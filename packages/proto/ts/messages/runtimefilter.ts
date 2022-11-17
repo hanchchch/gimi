@@ -19,6 +19,7 @@ export interface GetResultRequest {
 
 export interface GetResultResponse {
   result: InspectionResult | undefined;
+  error?: string | undefined;
 }
 
 function createBaseStartRequest(): StartRequest {
@@ -171,13 +172,16 @@ export const GetResultRequest = {
 };
 
 function createBaseGetResultResponse(): GetResultResponse {
-  return { result: undefined };
+  return { result: undefined, error: undefined };
 }
 
 export const GetResultResponse = {
   encode(message: GetResultResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.result !== undefined) {
       InspectionResult.encode(message.result, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.error !== undefined) {
+      writer.uint32(18).string(message.error);
     }
     return writer;
   },
@@ -192,6 +196,9 @@ export const GetResultResponse = {
         case 1:
           message.result = InspectionResult.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.error = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -201,12 +208,16 @@ export const GetResultResponse = {
   },
 
   fromJSON(object: any): GetResultResponse {
-    return { result: isSet(object.result) ? InspectionResult.fromJSON(object.result) : undefined };
+    return {
+      result: isSet(object.result) ? InspectionResult.fromJSON(object.result) : undefined,
+      error: isSet(object.error) ? String(object.error) : undefined,
+    };
   },
 
   toJSON(message: GetResultResponse): unknown {
     const obj: any = {};
     message.result !== undefined && (obj.result = message.result ? InspectionResult.toJSON(message.result) : undefined);
+    message.error !== undefined && (obj.error = message.error);
     return obj;
   },
 
@@ -215,6 +226,7 @@ export const GetResultResponse = {
     message.result = (object.result !== undefined && object.result !== null)
       ? InspectionResult.fromPartial(object.result)
       : undefined;
+    message.error = object.error ?? undefined;
     return message;
   },
 };
