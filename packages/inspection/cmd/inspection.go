@@ -123,6 +123,7 @@ func main() {
 
 	chromeArgs := []string{
 		"disable-gpu",
+		"disable-dev-shm-usage",
 		"window-size=1920,1080",
 		"no-sandbox",
 		"headless",
