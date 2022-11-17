@@ -7,6 +7,7 @@
     "inspection": "packages/inspection",
     "invoker": "packages/invoker",
     "proto": "packages/proto",
-    "runtime-filter": "packages/runtime-filter"
+    "runtime-filter": "packages/runtime-filter",
+    "web": "packages/web"
   }
 }

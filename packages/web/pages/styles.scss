@@ -1,0 +1,99 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  line-height: 1.5;
+  tab-size: 4;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+h1,
+h2,
+p,
+pre {
+  margin: 0;
+}
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+h1,
+h2 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+$main: rgba(55, 65, 81, 1);
+
+.shadow {
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.rounded {
+  border-radius: 1.5rem;
+}
+.wrapper {
+  width: 100%;
+}
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: $main;
+  width: 100%;
+}
+.card {
+  @extend .rounded;
+  padding: 2rem 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+label {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+input {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  border-bottom: 1px solid $main;
+}
+
+button {
+  @extend .rounded;
+  background-color: hsla(162, 47%, 50%, 1);
+  border: none;
+  color: rgba(255, 255, 255, 1);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 1rem 2rem;
+  transition: background-color 0.15s ease-in-out;
+  width: 100%;
+
+  &:hover {
+    background-color: hsla(162, 47%, 40%, 1);
+  }
+}

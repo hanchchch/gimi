@@ -3,7 +3,7 @@ import { InspectDto } from "./inspection.dto";
 
 import { InspectionService } from "./inspection.service";
 
-@Controller(`inspection`)
+@Controller(`inspections`)
 export class InspectionController {
   constructor(private readonly inspectionService: InspectionService) {}
 

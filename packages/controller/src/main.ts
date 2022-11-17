@@ -15,6 +15,8 @@ async function bootstrap() {
   const config: ConfigService<EnvVars> = app.get(ConfigService);
   const port = config.get("PORT", 3000);
 
+  app.enableCors();
+
   await app.listen(port);
   Logger.log(`🚀 Controller is running on: ${await app.getUrl()}`);
 }

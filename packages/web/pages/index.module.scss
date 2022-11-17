@@ -1,0 +1,57 @@
+#welcome {
+  margin-top: 2.5rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  span {
+    display: block;
+    font-size: 1.875rem;
+    font-weight: 300;
+    line-height: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(55, 65, 81, 1);
+  margin-top: 2rem;
+
+  .wrapper {
+    max-width: 480px;
+    width: 100%;
+    input {
+      width: 100%;
+    }
+  }
+
+  button {
+    margin-top: 1rem;
+  }
+}
+
+#result {
+  display: flex;
+  flex-direction: column;
+  color: rgba(55, 65, 81, 1);
+  margin-top: 1.25rem;
+
+  table {
+    width: 100%;
+
+    th {
+      padding-top: 1rem;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+}
