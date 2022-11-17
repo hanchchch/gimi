@@ -6,27 +6,20 @@ import (
 )
 
 type NetworkInspector struct {
-	device          string
-	handlers        []func(packet gopacket.Packet)
-	shouldTerminate chan (bool)
-	handle          *pcap.Handle
+	device   string
+	handlers []func(packet gopacket.Packet)
+	handle   *pcap.Handle
 }
 
 func NewNetworkInspector(device string) *NetworkInspector {
 	return &NetworkInspector{
-		device:          device,
-		handlers:        []func(packet gopacket.Packet){},
-		shouldTerminate: make(chan bool),
+		device:   device,
+		handlers: []func(packet gopacket.Packet){},
 	}
 }
 
 func (i *NetworkInspector) AppendHandler(f func(packet gopacket.Packet)) {
 	i.handlers = append(i.handlers, f)
-}
-
-func (i *NetworkInspector) WaitForTerminate() {
-	<-i.shouldTerminate
-	i.handle.Close()
 }
 
 func (i *NetworkInspector) Listen() {
@@ -36,10 +29,6 @@ func (i *NetworkInspector) Listen() {
 		i.handle = handle
 	}
 
-	go func() {
-		i.WaitForTerminate()
-	}()
-
 	packetSource := gopacket.NewPacketSource(i.handle, i.handle.LinkType())
 	for packet := range packetSource.Packets() {
 		for _, handler := range i.handlers {
@@ -48,6 +37,6 @@ func (i *NetworkInspector) Listen() {
 	}
 }
 
-func (n *NetworkInspector) Terminate() {
-	n.shouldTerminate <- true
+func (i *NetworkInspector) Terminate() {
+	i.handle.Close()
 }
