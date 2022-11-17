@@ -1,1 +1,0 @@
-export const DB_FILTER_PACKAGE = "DB_FILTER_PACKAGE";

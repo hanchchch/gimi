@@ -1,6 +1,11 @@
+import { FormEventHandler } from "react";
 import styles from "./signin.module.scss";
 
 export function Signin() {
+  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    console.log("submit");
+  };
   return (
     <div className={styles.page}>
       <div className="wrapper">
@@ -32,7 +37,7 @@ export function Signin() {
           <div id={styles.form} className="card shadow">
             <div className={styles.wrapper}>
               <h2>Sign In</h2>
-              <form>
+              <form onSubmit={onSubmit}>
                 <label>
                   <span>Username</span>
                   <input type="text" />

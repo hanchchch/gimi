@@ -3,7 +3,6 @@
   "version": 2,
   "projects": {
     "controller": "packages/controller",
-    "db-filter": "packages/db-filter",
     "example-site": "packages/example-site",
     "inspection": "packages/inspection",
     "invoker": "packages/invoker",

@@ -2,9 +2,9 @@ GOPATH := $(shell go env GOPATH)
 
 all: go ts
 
-go: go/messages/runtimefilter.pb.go go/messages/dbfilter.pb.go go/messages/inspection.pb.go
+go: go/messages/runtimefilter.pb.go go/messages/inspection.pb.go
 
-ts: ts/messages/runtimefilter.pb.ts ts/messages/dbfilter.pb.ts ts/messages/inspection.pb.ts
+ts: ts/messages/runtimefilter.pb.ts ts/messages/inspection.pb.ts
 
 clean:
 	rm -f go/messages/*.pb.go
@@ -21,23 +21,11 @@ go/messages/inspection.pb.go:
 		--go_out=./go \
 		./messages/inspection.proto
 
-go/messages/dbfilter.pb.go:
-	protoc \
-	 	--go_opt=paths=source_relative \
-		--go_out=./go \
-		./messages/dbfilter.proto
-
 ts/messages/runtimefilter.pb.ts:
 	protoc \
 		--plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts_proto \
 		--ts_out=./ts \
 		./messages/runtimefilter.proto
-
-ts/messages/dbfilter.pb.ts:
-	protoc \
-		--plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts_proto \
-		--ts_out=./ts \
-		./messages/dbfilter.proto
 
 ts/messages/inspection.pb.ts:
 	protoc \
