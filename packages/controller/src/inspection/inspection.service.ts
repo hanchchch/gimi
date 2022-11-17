@@ -17,7 +17,7 @@ export class InspectionService {
   ) {}
 
   async inspect(params: InspectParams): Promise<Inspection> {
-    const { url, os } = params;
+    const { url, os = "linux" } = params;
 
     const inspection = await this.inspectionRepository.findOne({
       where: { url },
@@ -54,10 +54,9 @@ export class InspectionService {
         );
         await this.inspectionRepository.update(id, { ...inspection });
       } catch (e) {
-        if (e.message.includes(`ResultNotFoundException`)) {
-          return;
+        if (!e.message.includes(`ResultNotFoundException`)) {
+          throw e;
         }
-        throw e;
       }
     }
     return inspection;
