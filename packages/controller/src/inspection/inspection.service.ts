@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { firstValueFrom } from "rxjs";
 import { Repository } from "typeorm";
-import { InspectionResult } from "../inspection/inspection-result.entity";
+import { Inspection } from "../inspection/inspection.entity";
 import { InjectRuntimeFilter } from "../runtime-filter/runtime-filter.decorators";
 import { RuntimeFilterService } from "../runtime-filter/runtime-filter.service";
 import { InspectParams } from "./inspection.dto";
@@ -12,39 +12,54 @@ export class InspectionService {
   constructor(
     @InjectRuntimeFilter()
     private readonly runtimeFilterService: RuntimeFilterService,
-    @InjectRepository(InspectionResult)
-    private readonly inspectionRepository: Repository<InspectionResult>
+    @InjectRepository(Inspection)
+    private readonly inspectionRepository: Repository<Inspection>
   ) {}
 
-  async inspect(params: InspectParams) {
+  async inspect(params: InspectParams): Promise<Inspection> {
     const { url, os } = params;
 
-    const blacklist = await this.inspectionRepository.findOne({
+    const inspection = await this.inspectionRepository.findOne({
       where: { url },
     });
 
-    if (blacklist) {
-      return { blacklist };
+    if (inspection) {
+      return inspection;
     }
 
     const { id } = await firstValueFrom(
       this.runtimeFilterService.start({ url, os })
     );
 
-    return { id };
+    const newInspection = this.inspectionRepository.create({ url, id });
+
+    await this.inspectionRepository.insert(newInspection);
+
+    return newInspection;
   }
 
-  async fetchResult(id: string) {
-    try {
-      const result = await firstValueFrom(
-        this.runtimeFilterService.getResult({ id })
-      );
-      return { id, ...result };
-    } catch (e) {
-      if (e.message.includes(`ResultNotFoundException`)) {
-        throw new NotFoundException();
-      }
-      throw e;
+  async fetchInspection(id: string) {
+    const inspection = await this.inspectionRepository.findOne({
+      where: { id },
+    });
+
+    if (!inspection) {
+      throw new NotFoundException();
     }
+
+    if (!inspection.result) {
+      try {
+        inspection.result = await firstValueFrom(
+          this.runtimeFilterService.getResult({ id })
+        );
+        await this.inspectionRepository.update(id, { ...inspection });
+      } catch (e) {
+        if (e.message.includes(`ResultNotFoundException`)) {
+          return;
+        }
+        throw e;
+      }
+    }
+    return inspection;
   }
 }

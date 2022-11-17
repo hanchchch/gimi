@@ -13,7 +13,7 @@ export class InspectionController {
   }
 
   @Get(`:id`)
-  async fetchResult(@Param(`id`) id: string) {
-    return this.inspectionService.fetchResult(id);
+  async fetchInspection(@Param(`id`) id: string) {
+    return this.inspectionService.fetchInspection(id);
   }
 }
