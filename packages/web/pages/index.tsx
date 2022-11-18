@@ -57,7 +57,7 @@ export function Index() {
                     <tr>
                       <th>redirects you to...</th>
                     </tr>
-                    {data.result.locations.map((location) => (
+                    {data.result.locations?.map((location) => (
                       <tr key={location}>
                         <td>{location}</td>
                       </tr>
@@ -73,7 +73,7 @@ export function Index() {
                     <tr>
                       <th>communicates with...</th>
                     </tr>
-                    {data.result.hosts.map((host) => (
+                    {data.result.hosts?.map((host) => (
                       <tr key={host}>
                         <td>{host}</td>
                       </tr>
@@ -81,7 +81,7 @@ export function Index() {
                     <tr>
                       <th>requests to...</th>
                     </tr>
-                    {data.result.urls.map((url) => (
+                    {data.result.urls?.map((url) => (
                       <tr key={url}>
                         <td>{url}</td>
                       </tr>

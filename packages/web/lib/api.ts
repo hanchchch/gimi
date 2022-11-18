@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { Inspection } from "./inerface";
 
-const API_HOST = "http://localhost:3000";
+const API_HOST = "/api";
 
 export const useFetchInspection = (
   requestId: string,
