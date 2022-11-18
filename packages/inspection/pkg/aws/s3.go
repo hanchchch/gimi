@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	u "net/url"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -69,5 +70,5 @@ func (s *S3Client) UploadScreenshot(bucket string, url string, data []byte) (str
 		key,
 		ioutil.NopCloser(bytes.NewReader(data)),
 	)
-	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucket, s.region, key), err
+	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucket, s.region, u.QueryEscape(key)), err
 }
