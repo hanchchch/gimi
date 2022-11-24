@@ -5,6 +5,7 @@ export interface Inspection {
     url: string;
     malicious: boolean;
     screenshot: string;
+    reasons: string[];
     hosts: string[];
     locations: string[];
     urls: string[];

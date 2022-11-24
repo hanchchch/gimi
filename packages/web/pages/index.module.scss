@@ -37,6 +37,20 @@
   }
 }
 
+#malicious {
+  margin-top: 1.25rem;
+  background-color: rgba(55, 65, 81, 1);
+  color: white;
+
+  h2 {
+    color: rgba(255, 85, 52, 1);
+  }
+
+  p {
+    opacity: 0.5;
+  }
+}
+
 #result {
   display: flex;
   flex-direction: column;

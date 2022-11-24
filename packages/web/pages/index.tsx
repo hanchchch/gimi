@@ -38,6 +38,17 @@ export function Index() {
               <button onClick={onSubmit}>Submit</button>
             </div>
           </div>
+          {data?.result.malicious && (
+            <div id={styles.malicious} className="card shadow">
+              <h2>This URL looks malicious.</h2>
+              <p>These are the reasons.</p>
+              <ul>
+                {data.result.reasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div id={styles.result} className="card shadow">
             <div className={styles.wrapper}>
               <h2>Result</h2>

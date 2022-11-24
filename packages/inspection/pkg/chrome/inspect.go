@@ -2,7 +2,7 @@ package chrome
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -64,10 +64,9 @@ func (c *ChromeClient) InspectNetwork() error {
 			return entry.IsResponseReceived()
 		}) {
 			status := responseLog.Message.Params.Response.Status
+			log.Printf("captured input data posting - %d", status)
 			if 200 <= status && status < 400 {
-				c.result.Reasons = append(c.result.Reasons, fmt.Sprintf(
-					"Payload delivered successfully to %v. Scammers may let you log in without validation, since they don't know your id/pw.", payloadLog.GetRequestURL(),
-				))
+				c.result.Reasons = append(c.result.Reasons, "Payload delivered successfully without validation.")
 			}
 		}
 	}
