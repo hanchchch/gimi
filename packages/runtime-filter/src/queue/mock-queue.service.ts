@@ -16,6 +16,7 @@ export class MockQueueService implements QueueService {
               url: "",
               malicious: false,
               screenshot: "",
+              reasons: [],
               locations: [],
               sendingTo: [],
               hosts: [],
