@@ -51,10 +51,12 @@ func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
 	c.service = service
 
 	caps := selenium.Capabilities{}
-	caps.AddChrome(chrome.Capabilities{Args: options.ChromeArgs})
-	caps.AddChrome(chrome.Capabilities{PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
-		EnableNetwork: &c.enableNetwork,
-	}})
+	caps.AddChrome(chrome.Capabilities{
+		Args: options.ChromeArgs,
+		PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
+			EnableNetwork: &c.enableNetwork,
+		},
+	})
 	caps.SetLogLevel(log.Performance, log.All)
 
 	driver, err := selenium.NewRemote(caps, "")
