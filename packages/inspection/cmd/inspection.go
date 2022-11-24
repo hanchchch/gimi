@@ -25,10 +25,11 @@ const (
 func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResult, c.ChromeInspectResult) {
 	r := &pb.InspectionResult{
 		Url:       url,
+		Malicious: false,
+		Reasons:   []string{},
 		Hosts:     []string{},
 		SendingTo: []string{},
 		Urls:      []string{},
-		Malicious: false,
 	}
 
 	hc := h.NewHeadlessClient()
@@ -70,7 +71,10 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	}
 
 	r.SendingTo = cr.SendingTo
-	r.Malicious = cr.Malicious
+	if cr.Reasons != nil {
+		r.Malicious = len(cr.Reasons) > 0
+		r.Reasons = cr.Reasons
+	}
 
 	return r, cr
 }

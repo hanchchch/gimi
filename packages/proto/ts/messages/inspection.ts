@@ -9,8 +9,9 @@ export interface InspectionArgs {
 
 export interface InspectionResult {
   url: string;
-  malicious: boolean;
   screenshot: string;
+  malicious: boolean;
+  reasons: string[];
   locations: string[];
   hosts: string[];
   urls: string[];
@@ -76,7 +77,7 @@ export const InspectionArgs = {
 };
 
 function createBaseInspectionResult(): InspectionResult {
-  return { url: "", malicious: false, screenshot: "", locations: [], hosts: [], urls: [], sendingTo: [] };
+  return { url: "", screenshot: "", malicious: false, reasons: [], locations: [], hosts: [], urls: [], sendingTo: [] };
 }
 
 export const InspectionResult = {
@@ -84,23 +85,26 @@ export const InspectionResult = {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
     }
-    if (message.malicious === true) {
-      writer.uint32(16).bool(message.malicious);
-    }
     if (message.screenshot !== "") {
-      writer.uint32(26).string(message.screenshot);
+      writer.uint32(18).string(message.screenshot);
     }
-    for (const v of message.locations) {
+    if (message.malicious === true) {
+      writer.uint32(24).bool(message.malicious);
+    }
+    for (const v of message.reasons) {
       writer.uint32(34).string(v!);
     }
-    for (const v of message.hosts) {
+    for (const v of message.locations) {
       writer.uint32(42).string(v!);
     }
-    for (const v of message.urls) {
+    for (const v of message.hosts) {
       writer.uint32(50).string(v!);
     }
-    for (const v of message.sendingTo) {
+    for (const v of message.urls) {
       writer.uint32(58).string(v!);
+    }
+    for (const v of message.sendingTo) {
+      writer.uint32(66).string(v!);
     }
     return writer;
   },
@@ -116,21 +120,24 @@ export const InspectionResult = {
           message.url = reader.string();
           break;
         case 2:
-          message.malicious = reader.bool();
-          break;
-        case 3:
           message.screenshot = reader.string();
           break;
+        case 3:
+          message.malicious = reader.bool();
+          break;
         case 4:
-          message.locations.push(reader.string());
+          message.reasons.push(reader.string());
           break;
         case 5:
-          message.hosts.push(reader.string());
+          message.locations.push(reader.string());
           break;
         case 6:
-          message.urls.push(reader.string());
+          message.hosts.push(reader.string());
           break;
         case 7:
+          message.urls.push(reader.string());
+          break;
+        case 8:
           message.sendingTo.push(reader.string());
           break;
         default:
@@ -144,8 +151,9 @@ export const InspectionResult = {
   fromJSON(object: any): InspectionResult {
     return {
       url: isSet(object.url) ? String(object.url) : "",
-      malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
       screenshot: isSet(object.screenshot) ? String(object.screenshot) : "",
+      malicious: isSet(object.malicious) ? Boolean(object.malicious) : false,
+      reasons: Array.isArray(object?.reasons) ? object.reasons.map((e: any) => String(e)) : [],
       locations: Array.isArray(object?.locations) ? object.locations.map((e: any) => String(e)) : [],
       hosts: Array.isArray(object?.hosts) ? object.hosts.map((e: any) => String(e)) : [],
       urls: Array.isArray(object?.urls) ? object.urls.map((e: any) => String(e)) : [],
@@ -156,8 +164,13 @@ export const InspectionResult = {
   toJSON(message: InspectionResult): unknown {
     const obj: any = {};
     message.url !== undefined && (obj.url = message.url);
-    message.malicious !== undefined && (obj.malicious = message.malicious);
     message.screenshot !== undefined && (obj.screenshot = message.screenshot);
+    message.malicious !== undefined && (obj.malicious = message.malicious);
+    if (message.reasons) {
+      obj.reasons = message.reasons.map((e) => e);
+    } else {
+      obj.reasons = [];
+    }
     if (message.locations) {
       obj.locations = message.locations.map((e) => e);
     } else {
@@ -184,8 +197,9 @@ export const InspectionResult = {
   fromPartial<I extends Exact<DeepPartial<InspectionResult>, I>>(object: I): InspectionResult {
     const message = createBaseInspectionResult();
     message.url = object.url ?? "";
-    message.malicious = object.malicious ?? false;
     message.screenshot = object.screenshot ?? "";
+    message.malicious = object.malicious ?? false;
+    message.reasons = object.reasons?.map((e) => e) || [];
     message.locations = object.locations?.map((e) => e) || [];
     message.hosts = object.hosts?.map((e) => e) || [];
     message.urls = object.urls?.map((e) => e) || [];

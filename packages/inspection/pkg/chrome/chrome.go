@@ -12,9 +12,9 @@ import (
 )
 
 type ChromeInspectResult struct {
-	Malicious  bool
 	Screenshot []byte
 	SendingTo  []string
+	Reasons    []string
 }
 type ChromeClient struct {
 	enableNetwork bool
@@ -32,9 +32,9 @@ func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
 	c := &ChromeClient{
 		enableNetwork: true,
 		result: ChromeInspectResult{
-			Malicious:  false,
 			Screenshot: []byte{},
 			SendingTo:  []string{},
+			Reasons:    []string{},
 		},
 		Payload: uuid.New().String(),
 	}
