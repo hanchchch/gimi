@@ -8,17 +8,20 @@ import (
 	"github.com/google/uuid"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+	"github.com/tebeka/selenium/log"
 )
 
 type ChromeInspectResult struct {
 	Malicious  bool
 	Screenshot []byte
+	SendingTo  []string
 }
 type ChromeClient struct {
-	driver  selenium.WebDriver
-	service *selenium.Service
-	result  ChromeInspectResult
-	Payload string
+	enableNetwork bool
+	driver        selenium.WebDriver
+	service       *selenium.Service
+	result        ChromeInspectResult
+	Payload       string
 }
 
 type ChromeClientOptions struct {
@@ -26,6 +29,16 @@ type ChromeClientOptions struct {
 }
 
 func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
+	c := &ChromeClient{
+		enableNetwork: true,
+		result: ChromeInspectResult{
+			Malicious:  false,
+			Screenshot: []byte{},
+			SendingTo:  []string{},
+		},
+		Payload: uuid.New().String(),
+	}
+
 	driverPath := os.Getenv("CHROME_DRIVER_PATH")
 	if driverPath == "" {
 		driverPath = strings.Join([]string{"./drivers/chrome", runtime.GOARCH, runtime.GOOS}, "/")
@@ -35,20 +48,23 @@ func NewChromeClient(options ChromeClientOptions) (*ChromeClient, error) {
 		return nil, err
 	}
 
+	c.service = service
+
 	caps := selenium.Capabilities{}
 	caps.AddChrome(chrome.Capabilities{Args: options.ChromeArgs})
+	caps.AddChrome(chrome.Capabilities{PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
+		EnableNetwork: &c.enableNetwork,
+	}})
+	caps.SetLogLevel(log.Performance, log.All)
 
 	driver, err := selenium.NewRemote(caps, "")
 	if err != nil {
 		return nil, err
 	}
 
-	return &ChromeClient{
-		driver:  driver,
-		service: service,
-		result:  ChromeInspectResult{},
-		Payload: uuid.New().String(),
-	}, nil
+	c.driver = driver
+
+	return c, nil
 }
 
 func (c *ChromeClient) Run(url string) (ChromeInspectResult, error) {

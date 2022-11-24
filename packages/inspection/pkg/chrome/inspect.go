@@ -1,9 +1,12 @@
 package chrome
 
 import (
+	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/tebeka/selenium"
+	slog "github.com/tebeka/selenium/log"
 )
 
 func (c *ChromeClient) InspectForms() error {
@@ -37,6 +40,38 @@ func (c *ChromeClient) InspectForms() error {
 	return nil
 }
 
+func (c *ChromeClient) InspectNetwork() error {
+	l, err := c.driver.Log(slog.Performance)
+	if err != nil {
+		return err
+	}
+
+	logs := NewNetworkLogEntries()
+	logs.ParseFromDriverLogs(l)
+
+	for _, payloadLog := range *logs.Filter(func(entry *NetworkLog) bool {
+		return entry.IsRequestWillBeSent()
+	}).Filter(func(entry *NetworkLog) bool {
+		if b, err := json.Marshal(entry); err != nil {
+			return false
+		} else {
+			return strings.Contains(string(b), c.Payload)
+		}
+	}) {
+		c.result.SendingTo = append(c.result.SendingTo, payloadLog.GetRequestURL())
+		for _, responseLog := range *logs.FilterByRequestId(payloadLog.GetRequestID()).Filter(func(entry *NetworkLog) bool {
+			return entry.IsResponseReceived()
+		}) {
+			status := responseLog.Message.Params.Response.Status
+			if 200 <= status && status < 400 {
+				c.result.Malicious = true
+			}
+		}
+	}
+
+	return nil
+}
+
 func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 	defer c.service.Stop()
 
@@ -51,6 +86,10 @@ func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 	}
 
 	if err := c.InspectForms(); err != nil {
+		return c.result, err
+	}
+
+	if err := c.InspectNetwork(); err != nil {
 		return c.result, err
 	}
 

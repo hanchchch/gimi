@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -29,6 +28,7 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 		Hosts:     []string{},
 		SendingTo: []string{},
 		Urls:      []string{},
+		Malicious: false,
 	}
 
 	hc := h.NewHeadlessClient()
@@ -44,11 +44,6 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 			url = req.Host + url
 		}
 		log.Printf("captured - http - %v %v", req.Method, url)
-		b, _ := ioutil.ReadAll(req.Body)
-		if strings.Contains(string(b), cc.Payload) {
-			log.Printf("captured - input data - %v %v", req.Method, url)
-			r.SendingTo = append(r.SendingTo, url)
-		}
 		r.Urls = append(r.Urls, url)
 	}))
 	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
@@ -58,6 +53,7 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	go ni.Listen()
 	defer ni.Terminate()
 
+	log.Printf("visiting with simple http client")
 	if hr, err := hc.Visit(h.VisitParams{
 		Method: "GET",
 		Url:    url,
@@ -67,11 +63,13 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 		r.Locations = hr.Locations
 	}
 
+	log.Printf("starting chrome crawler")
 	cr, err := cc.Run(url)
 	if err != nil {
 		panic(err)
 	}
 
+	r.SendingTo = cr.SendingTo
 	r.Malicious = cr.Malicious
 
 	return r, cr
@@ -114,9 +112,12 @@ func main() {
 
 	flag.Parse()
 
+	log.Printf("starting inspection for %v", *url)
+
 	if *device == "" {
 		*device = os.Getenv("NETWORK_INTERFACE")
 	}
+	log.Printf("device: %v", *device)
 
 	awsAccessKey := os.Getenv("AWS_ACCESS_KEY_ID")
 	awsSecretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
@@ -130,11 +131,15 @@ func main() {
 	}
 
 	if *ua != "" {
+		log.Printf("user agent: %v", *ua)
 		chromeArgs = append(chromeArgs, "user-agent="+*ua)
 	}
+	log.Printf("chrome args: %v", chromeArgs)
 
+	log.Printf("inspecting...")
 	r, cr := inspect(urls.EnsureProtocol(*url), *device, chromeArgs)
 
+	log.Printf("uploading screenshot...")
 	r.Screenshot = uploadScreenshot(*url, cr.Screenshot, *s3region, *s3bucket, awsAccessKey, awsSecretKey)
 
 	output(r)
