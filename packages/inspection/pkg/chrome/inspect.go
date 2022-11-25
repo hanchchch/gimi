@@ -41,6 +41,23 @@ func (c *ChromeClient) InspectForms() error {
 	return nil
 }
 
+func (c *ChromeClient) InspectHref() error {
+	atags, err := c.driver.FindElements(selenium.ByCSSSelector, "a")
+	if err != nil {
+		return err
+	}
+
+	for _, a := range atags {
+		href, err := a.GetAttribute("href")
+		if err != nil {
+			continue
+		}
+		c.driver.ExecuteScript("window.open(arguments[0], '_blank');", []interface{}{href})
+	}
+
+	return nil
+}
+
 func (c *ChromeClient) InspectNetwork() error {
 	l, err := c.driver.Log(slog.Performance)
 	if err != nil {
@@ -74,6 +91,23 @@ func (c *ChromeClient) InspectNetwork() error {
 	return nil
 }
 
+func (c *ChromeClient) InspectNetworkAll() error {
+	windows, err := c.driver.WindowHandles()
+	if err != nil {
+		return err
+	}
+	for _, window := range windows {
+		if err := c.driver.SwitchWindow(window); err != nil {
+			return err
+		}
+
+		if err := c.InspectNetwork(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 	defer c.service.Stop()
 
@@ -91,7 +125,13 @@ func (c *ChromeClient) Inspect(url string) (ChromeInspectResult, error) {
 		return c.result, err
 	}
 
-	if err := c.InspectNetwork(); err != nil {
+	if err := c.InspectHref(); err != nil {
+		return c.result, err
+	}
+
+	time.Sleep(1 * time.Second)
+
+	if err := c.InspectNetworkAll(); err != nil {
 		return c.result, err
 	}
 

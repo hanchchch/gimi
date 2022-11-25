@@ -32,6 +32,11 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 		Urls:      []string{},
 	}
 
+	filesBefore, err := os.ReadDir(".")
+	if err != nil {
+		panic(err)
+	}
+
 	hc := h.NewHeadlessClient()
 	cc, err := c.NewChromeClient(c.ChromeClientOptions{ChromeArgs: chromeArgs})
 	if err != nil {
@@ -70,11 +75,19 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 		panic(err)
 	}
 
+	r.Reasons = append(r.Reasons, cr.Reasons...)
 	r.SendingTo = cr.SendingTo
-	if cr.Reasons != nil {
-		r.Malicious = len(cr.Reasons) > 0
-		r.Reasons = cr.Reasons
+
+	filesAfter, err := os.ReadDir(".")
+	if err != nil {
+		panic(err)
 	}
+
+	if len(filesAfter) > len(filesBefore) {
+		r.Reasons = append(r.Reasons, "Something was downloaded.")
+	}
+
+	r.Malicious = len(r.Reasons) > 0
 
 	return r, cr
 }

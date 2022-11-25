@@ -6,6 +6,9 @@ export function Signin() {
     e.preventDefault();
     console.log("submit");
   };
+  const onDownload = () => {
+    window.open("/downloads/something-bad.exe", "_blank");
+  };
   return (
     <div className={styles.page}>
       <div className="wrapper">
@@ -48,6 +51,11 @@ export function Signin() {
                 </label>
                 <button type="submit">Submit</button>
               </form>
+            </div>
+          </div>
+          <div className="card shadow">
+            <div>
+              <button onClick={onDownload}>Download Now</button>
             </div>
           </div>
         </div>
