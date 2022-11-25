@@ -47,7 +47,10 @@ func (c *ChromeClient) InspectHref() error {
 		return err
 	}
 
-	for _, a := range atags {
+	for i, a := range atags {
+		if i > 20 { // TODO
+			break
+		}
 		href, err := a.GetAttribute("href")
 		if err != nil {
 			continue

@@ -38,7 +38,7 @@ export function Index() {
               <button onClick={onSubmit}>Submit</button>
             </div>
           </div>
-          {data?.result.malicious && (
+          {data?.result?.malicious && (
             <div id={styles.malicious} className="card shadow">
               <h2>This URL looks malicious.</h2>
               <p>These are the reasons.</p>
