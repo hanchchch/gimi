@@ -2,6 +2,7 @@ package listener
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"runtime"
 	"strings"
@@ -68,6 +69,30 @@ func (l *RedisListener) KeepListenerKey() error {
 	}
 }
 
+func (l *RedisListener) Process(ctx context.Context, args *pb.HandlerArgs) error {
+	data, err := l.callback(args)
+	if err != nil {
+		log.Printf("failed to handle request: %v", err)
+		estr := err.Error()
+		data = &pb.HandlerResult{
+			RequestId: args.RequestId,
+			Error:     &estr,
+		}
+	}
+
+	resp, err := proto.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("failed to parse response: %v", err)
+	}
+
+	_, err = l.redis.Set(ctx, l.ResultKey(args.RequestId), resp, 3*time.Hour).Result()
+	if err != nil {
+		return fmt.Errorf("failed to lpush: %v", err)
+	}
+
+	return nil
+}
+
 func (l *RedisListener) Listen() error {
 	log.Println("Listening to", l.url)
 	go l.KeepListenerKey()
@@ -86,27 +111,11 @@ func (l *RedisListener) Listen() error {
 			continue
 		}
 
-		data, err := l.callback(args)
-		if err != nil {
-			log.Printf("error while processing request: %v", err)
-			estr := err.Error()
-			data = &pb.HandlerResult{
-				RequestId: args.RequestId,
-				Error:     &estr,
+		go func() {
+			if err := l.Process(ctx, args); err != nil {
+				log.Printf("error while processing request: %v", err)
 			}
-		}
-
-		resp, err := proto.Marshal(data)
-		if err != nil {
-			log.Printf("failed to parse response: %v", err)
-			continue
-		}
-
-		_, err = l.redis.Set(ctx, l.ResultKey(args.RequestId), resp, 3*time.Hour).Result()
-		if err != nil {
-			log.Printf("error while lpush: %v", err)
-			continue
-		}
+		}()
 	}
 }
 
