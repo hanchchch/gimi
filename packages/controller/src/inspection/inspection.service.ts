@@ -17,7 +17,7 @@ export class InspectionService {
   ) {}
 
   async inspect(params: InspectParams): Promise<Inspection> {
-    const { url, os = "linux" } = params;
+    const { url } = params;
 
     const inspection = await this.inspectionRepository.findOne({
       where: { url },
@@ -28,7 +28,7 @@ export class InspectionService {
     }
 
     const { id } = await firstValueFrom(
-      this.runtimeFilterService.start({ url, os })
+      this.runtimeFilterService.start({ url })
     );
 
     const newInspection = this.inspectionRepository.create({ url, id });

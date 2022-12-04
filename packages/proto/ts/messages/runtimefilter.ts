@@ -6,7 +6,6 @@ export const protobufPackage = "runtimefilter";
 
 export interface StartRequest {
   url: string;
-  os: string;
 }
 
 export interface StartResponse {
@@ -23,16 +22,13 @@ export interface GetResultResponse {
 }
 
 function createBaseStartRequest(): StartRequest {
-  return { url: "", os: "" };
+  return { url: "" };
 }
 
 export const StartRequest = {
   encode(message: StartRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.url !== "") {
       writer.uint32(10).string(message.url);
-    }
-    if (message.os !== "") {
-      writer.uint32(18).string(message.os);
     }
     return writer;
   },
@@ -47,9 +43,6 @@ export const StartRequest = {
         case 1:
           message.url = reader.string();
           break;
-        case 2:
-          message.os = reader.string();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -59,20 +52,18 @@ export const StartRequest = {
   },
 
   fromJSON(object: any): StartRequest {
-    return { url: isSet(object.url) ? String(object.url) : "", os: isSet(object.os) ? String(object.os) : "" };
+    return { url: isSet(object.url) ? String(object.url) : "" };
   },
 
   toJSON(message: StartRequest): unknown {
     const obj: any = {};
     message.url !== undefined && (obj.url = message.url);
-    message.os !== undefined && (obj.os = message.os);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<StartRequest>, I>>(object: I): StartRequest {
     const message = createBaseStartRequest();
     message.url = object.url ?? "";
-    message.os = object.os ?? "";
     return message;
   },
 };

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"runtime"
 	"strings"
 	"time"
 
@@ -47,11 +46,11 @@ func (l *RedisListener) buildKey(keys ...string) string {
 }
 
 func (l *RedisListener) ListenerKey() string {
-	return l.buildKey("listener", runtime.GOOS, l.id)
+	return l.buildKey("listener", l.id)
 }
 
 func (l *RedisListener) QueueKey() string {
-	return l.buildKey("request", runtime.GOOS)
+	return l.buildKey("request")
 }
 
 func (l *RedisListener) ResultKey(requestId string) string {

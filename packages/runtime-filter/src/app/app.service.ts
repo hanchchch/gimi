@@ -15,9 +15,9 @@ import { ResultNotFoundException } from "./app.exceptions";
 export class AppService {
   constructor(@InjectQueue() private readonly queue: QueueService) {}
 
-  async put(os: string, data: HandlerArgs) {
+  async put(data: HandlerArgs) {
     return this.queue.push(
-      ["request", os],
+      ["request"],
       new TextDecoder().decode(HandlerArgs.encode(data).finish())
     );
   }
@@ -31,10 +31,10 @@ export class AppService {
   }
 
   async start(params: StartRequest): Promise<StartResponse> {
-    const { url, os } = params;
+    const { url } = params;
     const id = randomUUID();
 
-    await this.put(os, { requestId: id, args: { url } });
+    await this.put({ requestId: id, args: { url } });
 
     return { id };
   }
