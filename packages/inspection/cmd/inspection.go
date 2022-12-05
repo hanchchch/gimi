@@ -140,6 +140,7 @@ func run(requested_url string) *pb.InspectionResult {
 		"window-size=1920,1080",
 		"no-sandbox",
 		"headless",
+		"--single-process",
 	}
 
 	if *ua != "" {
