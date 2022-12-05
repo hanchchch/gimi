@@ -11,6 +11,12 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
+	"google.golang.org/protobuf/proto"
+)
+
+const (
+	bound = "-----"
 )
 
 type DockerContainer struct {
@@ -80,6 +86,25 @@ func (c *DockerContainer) Logs() ([]byte, []byte, error) {
 	stderr := new(bytes.Buffer)
 	stdcopy.StdCopy(stdout, stderr, r)
 	return stdout.Bytes(), stderr.Bytes(), nil
+}
+
+func (c *DockerContainer) GetResult() (*pb.InspectionResult, error) {
+	stdout, stderr, err := c.Logs()
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get logs from container: %w", err)
+	}
+
+	r := &pb.InspectionResult{}
+	splited := bytes.Split(stdout, []byte(bound))
+	if len(splited) < 2 {
+		return nil, fmt.Errorf("failed to parse stdout:\n%s\n\nstderr:\n%s", stdout, stderr)
+	}
+	if err := proto.Unmarshal(splited[1], r); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal inspection result: %w", err)
+	}
+
+	return r, nil
 }
 
 func (c *DockerContainer) Run(timeout time.Duration) error {

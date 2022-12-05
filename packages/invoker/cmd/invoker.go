@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -10,7 +10,6 @@ import (
 	"github.com/hanchchch/gimi/packages/invoker/pkg/listener"
 	"github.com/hanchchch/gimi/packages/invoker/pkg/utils"
 	"github.com/joho/godotenv"
-	"google.golang.org/protobuf/proto"
 
 	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
@@ -55,8 +54,9 @@ func main() {
 	}
 
 	handler := func(args *pb.HandlerArgs) (*pb.HandlerResult, error) {
+		log.Printf("received request: %s", args.Args.Url)
 		c, err := m.CreateInspectionContainer(&container.InspectionContainerConfig{
-			Provider: "docker",
+			Provider: "lambda",
 			Name:     inspectionName,
 			Args:     args.Args,
 		})
@@ -69,7 +69,7 @@ func main() {
 			return nil, fmt.Errorf("failed to run container: %w", err)
 		}
 
-		stdout, stderr, err := c.Logs()
+		r, err := c.GetResult()
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get logs from container: %w", err)
@@ -79,14 +79,6 @@ func main() {
 			return nil, fmt.Errorf("failed to remove container: %w", err)
 		}
 
-		r := &pb.InspectionResult{}
-		splited := bytes.Split(stdout, []byte(bound))
-		if len(splited) < 2 {
-			return nil, fmt.Errorf("failed to parse stdout:\n%s\n\nstderr:\n%s", stdout, stderr)
-		}
-		if err := proto.Unmarshal(splited[1], r); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal inspection result: %w", err)
-		}
 		fmt.Printf("result: %v\n", r.String())
 
 		return &pb.HandlerResult{

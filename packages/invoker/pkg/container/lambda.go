@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/lambda"
+	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
 type LambdaContainer struct {
@@ -28,8 +29,25 @@ func (c *LambdaContainer) GetID() string {
 }
 
 func (c *LambdaContainer) Logs() ([]byte, []byte, error) {
-	fmt.Printf("LambdaContainer.Logs: %+v", c.result)
-	return nil, nil, nil
+	if c.result.FunctionError != nil {
+		return nil, c.result.Payload, nil
+	} else {
+		return c.result.Payload, nil, nil
+	}
+}
+
+func (c *LambdaContainer) GetResult() (*pb.InspectionResult, error) {
+	if c.result.FunctionError != nil {
+		return nil, fmt.Errorf("lambda error: %s, %v", *c.result.FunctionError, string(c.result.Payload))
+	}
+
+	var r pb.InspectionResult
+	err := json.Unmarshal(c.result.Payload, &r)
+	if err != nil {
+		return nil, err
+	}
+
+	return &r, nil
 }
 
 func (c *LambdaContainer) Run(timeout time.Duration) error {
