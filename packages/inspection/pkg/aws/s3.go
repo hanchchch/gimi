@@ -22,6 +22,7 @@ type S3Client struct {
 type S3ClientOptions struct {
 	AccessKeyId     string
 	SecretAccessKey string
+	SessionToken    string
 	Region          string
 }
 
@@ -29,7 +30,7 @@ func NewS3Client(options S3ClientOptions) (S3Client, error) {
 	static_credentials := credentials.NewStaticCredentials(
 		options.AccessKeyId,
 		options.SecretAccessKey,
-		"",
+		options.SessionToken,
 	)
 
 	sess, err := session.NewSession(&aws.Config{

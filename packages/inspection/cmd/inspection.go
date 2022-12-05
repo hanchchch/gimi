@@ -96,19 +96,20 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	return r, cr
 }
 
-func uploadScreenshot(url string, screenshot []byte, s3region string, s3bucket string, accessKey string, secretKey string) string {
+func uploadScreenshot(url string, screenshot []byte, s3region string, s3bucket string, accessKey string, secretKey string, sessionToken string) string {
 	if s3, err := aws.NewS3Client(aws.S3ClientOptions{
 		AccessKeyId:     accessKey,
 		SecretAccessKey: secretKey,
+		SessionToken:    sessionToken,
 		Region:          s3region,
 	}); err != nil {
 		panic(err)
 	} else {
 		location, err := s3.UploadScreenshot(s3bucket, url, screenshot)
-		log.Printf("uploaded screenshot - %v", location)
 		if err != nil {
 			panic(err)
 		}
+		log.Printf("uploaded screenshot - %v", location)
 		return location
 	}
 }
@@ -133,6 +134,7 @@ func run(requested_url string) *pb.InspectionResult {
 
 	awsAccessKey := os.Getenv("AWS_ACCESS_KEY_ID")
 	awsSecretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+	awsSessionToken := os.Getenv("AWS_SESSION_TOKEN")
 
 	log.Printf("starting inspection for %v", *url)
 	log.Printf("device: %v", *device)
@@ -155,7 +157,7 @@ func run(requested_url string) *pb.InspectionResult {
 	r, cr := inspect(urls.EnsureProtocol(*url), *device, chromeArgs)
 
 	log.Printf("uploading screenshot...")
-	r.Screenshot = uploadScreenshot(*url, cr.Screenshot, *s3region, *s3bucket, awsAccessKey, awsSecretKey)
+	r.Screenshot = uploadScreenshot(*url, cr.Screenshot, *s3region, *s3bucket, awsAccessKey, awsSecretKey, awsSessionToken)
 
 	return r
 }
