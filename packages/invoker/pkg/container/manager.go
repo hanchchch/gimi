@@ -1,9 +1,12 @@
 package container
 
 import (
+	"fmt"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/docker/docker/client"
-	pb "github.com/hanchchch/gimi/packages/proto/go/messages"
 )
 
 const (
@@ -11,33 +14,55 @@ const (
 	ManagerNamespace = "invoker"
 )
 
+type AWSCredentials struct {
+	AccessKeyId     string
+	SecretAccessKey string
+}
+
 type Manager struct {
-	docker     *client.Client
-	aws        *session.Session
-	containers map[string]Container
-	namespace  string
+	docker         *client.Client
+	aws            *session.Session
+	containers     map[string]Container
+	namespace      string
+	awsCredentials AWSCredentials
 }
 
-type InspectionContainerConfig struct {
-	AttachStdin  bool
-	AttachStdout bool
-	AttachStderr bool
-	StopTimeout  *int
-	Env          []string
-	Args         *pb.InspectionArgs
+type ManagerConfig struct {
+	AWS AWSCredentials
 }
 
-func NewManager() *Manager {
+func NewManager(config *ManagerConfig) (*Manager, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		panic(err)
 	}
 
-	return &Manager{
+	m := &Manager{
 		docker:     cli,
 		containers: make(map[string]Container),
 		namespace:  ManagerNamespace,
 	}
+	if config.AWS.AccessKeyId != "" {
+		static_credentials := credentials.NewStaticCredentials(
+			config.AWS.AccessKeyId,
+			config.AWS.SecretAccessKey,
+			"",
+		)
+
+		sess, err := session.NewSession(&aws.Config{
+			Credentials: static_credentials,
+			Region:      aws.String("ap-northeast-2"),
+		})
+
+		if err != nil {
+			return nil, fmt.Errorf("unable to start aws session: %v", err)
+		}
+
+		m.aws = sess
+		m.awsCredentials = config.AWS
+	}
+
+	return m, nil
 }
 
 func (m *Manager) AppendContainer(c Container) (Container, error) {

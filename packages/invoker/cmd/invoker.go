@@ -16,12 +16,12 @@ import (
 )
 
 const (
-	inspectionDockerImageName = "gimi-inspection"
-	bound                     = "-----"
+	inspectionName = "gimi-inspection"
+	bound          = "-----"
+	timeout        = 60 * time.Second
 )
 
 func main() {
-	m := container.NewManager()
 	err := godotenv.Load()
 	if err == nil {
 		fmt.Println("loading .env file")
@@ -43,21 +43,29 @@ func main() {
 	awsAccessKey := utils.Getenv("AWS_ACCESS_KEY_ID", "")
 	awsSecretKey := utils.Getenv("AWS_SECRET_ACCESS_KEY", "")
 
+	m, err := container.NewManager(&container.ManagerConfig{
+		AWS: container.AWSCredentials{
+			AccessKeyId:     awsAccessKey,
+			SecretAccessKey: awsSecretKey,
+		},
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
 	handler := func(args *pb.HandlerArgs) (*pb.HandlerResult, error) {
-		c, err := m.CreateDockerContainer(&container.DockerContainerConfig{
-			Image: inspectionDockerImageName,
-			Cmd:   []string{"inspection", "-url", args.Args.Url},
-			Env: []string{
-				"AWS_ACCESS_KEY_ID=" + awsAccessKey,
-				"AWS_SECRET_ACCESS_KEY=" + awsSecretKey,
-			},
+		c, err := m.CreateInspectionContainer(&container.InspectionContainerConfig{
+			Provider: "docker",
+			Name:     inspectionName,
+			Args:     args.Args,
 		})
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to create container: %w", err)
 		}
 
-		if err := c.Run(60 * time.Second); err != nil {
+		if err := c.Run(timeout); err != nil {
 			return nil, fmt.Errorf("failed to run container: %w", err)
 		}
 
