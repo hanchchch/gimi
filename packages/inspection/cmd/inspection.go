@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/hanchchch/gimi/packages/inspection/pkg/aws"
 	c "github.com/hanchchch/gimi/packages/inspection/pkg/chrome"
 	h "github.com/hanchchch/gimi/packages/inspection/pkg/headless"
@@ -118,26 +119,20 @@ func output(r *pb.InspectionResult) {
 	fmt.Printf("%v%v", bound, string(b))
 }
 
-func main() {
-	godotenv.Load()
-
-	url := flag.String("url", "", "target url")
-	device := flag.String("device", "", "network interface")
+func run(requested_url string) *pb.InspectionResult {
+	url := flag.String("url", requested_url, "target url")
+	device := flag.String("device", os.Getenv("NETWORK_INTERFACE"), "network interface")
 	ua := flag.String("user-agent", "", "user agent")
 	s3region := flag.String("s3-region", "ap-northeast-2", "s3 region")
 	s3bucket := flag.String("s3-bucket", "gimi-screenshots", "s3 bucket")
 
 	flag.Parse()
 
-	log.Printf("starting inspection for %v", *url)
-
-	if *device == "" {
-		*device = os.Getenv("NETWORK_INTERFACE")
-	}
-	log.Printf("device: %v", *device)
-
 	awsAccessKey := os.Getenv("AWS_ACCESS_KEY_ID")
 	awsSecretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+
+	log.Printf("starting inspection for %v", *url)
+	log.Printf("device: %v", *device)
 
 	chromeArgs := []string{
 		"disable-gpu",
@@ -148,7 +143,6 @@ func main() {
 	}
 
 	if *ua != "" {
-		log.Printf("user agent: %v", *ua)
 		chromeArgs = append(chromeArgs, "user-agent="+*ua)
 	}
 	log.Printf("chrome args: %v", chromeArgs)
@@ -159,5 +153,19 @@ func main() {
 	log.Printf("uploading screenshot...")
 	r.Screenshot = uploadScreenshot(*url, cr.Screenshot, *s3region, *s3bucket, awsAccessKey, awsSecretKey)
 
-	output(r)
+	return r
+}
+
+func HandleLambdaEvent(event *pb.InspectionArgs) (*pb.InspectionResult, error) {
+	return run(event.GetUrl()), nil
+}
+
+func main() {
+	godotenv.Load()
+	if os.Getenv("IS_LAMBDA") == "true" {
+		lambda.Start(HandleLambdaEvent)
+	} else {
+		r := run("")
+		output(r)
+	}
 }
