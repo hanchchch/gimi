@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	bound = "-----"
+	inspectionDockerImageName = "gimi-inspection"
+	bound                     = "-----"
 )
 
 func main() {
@@ -43,13 +44,15 @@ func main() {
 	awsSecretKey := utils.Getenv("AWS_SECRET_ACCESS_KEY", "")
 
 	handler := func(args *pb.HandlerArgs) (*pb.HandlerResult, error) {
-		c, err := m.CreateInspectionContainer(&container.InspectionContainerConfig{
-			Args: args.Args,
+		c, err := m.CreateDockerContainer(&container.DockerContainerConfig{
+			Image: inspectionDockerImageName,
+			Cmd:   []string{"inspection", "-url", args.Args.Url},
 			Env: []string{
 				"AWS_ACCESS_KEY_ID=" + awsAccessKey,
 				"AWS_SECRET_ACCESS_KEY=" + awsSecretKey,
 			},
 		})
+
 		if err != nil {
 			return nil, fmt.Errorf("failed to create container: %w", err)
 		}
