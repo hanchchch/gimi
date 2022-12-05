@@ -20,6 +20,5 @@ RUN apk add --update chromium chromium-chromedriver libpcap-dev
 COPY --from=build /app/inspection /bin/inspection
 
 ENV CHROME_DRIVER_PATH=/usr/lib/chromium/chromedriver
-ENV NETWORK_INTERFACE=eth0
 
 CMD [ "/bin/inspection" ]

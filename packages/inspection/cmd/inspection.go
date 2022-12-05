@@ -43,22 +43,25 @@ func inspect(url string, device string, chromeArgs []string) (*pb.InspectionResu
 	if err != nil {
 		panic(err)
 	}
+	log.Printf("chrome ready")
 
-	ni := n.NewNetworkInspector(device)
-	ni.AppendHandler(n.HttpHandler(func(req *http.Request) {
-		url := req.URL.String()
-		if strings.HasPrefix(url, "/") {
-			url = req.Host + url
-		}
-		log.Printf("captured - http - %v %v", req.Method, url)
-		r.Urls = append(r.Urls, url)
-	}))
-	ni.AppendHandler(n.DnsQueryHandler(func(host string) {
-		log.Printf("captured - dns - %v", host)
-		r.Hosts = append(r.Hosts, host)
-	}))
-	go ni.Listen()
-	defer ni.Terminate()
+	if device != "" {
+		ni := n.NewNetworkInspector(device)
+		ni.AppendHandler(n.HttpHandler(func(req *http.Request) {
+			url := req.URL.String()
+			if strings.HasPrefix(url, "/") {
+				url = req.Host + url
+			}
+			log.Printf("captured - http - %v %v", req.Method, url)
+			r.Urls = append(r.Urls, url)
+		}))
+		ni.AppendHandler(n.DnsQueryHandler(func(host string) {
+			log.Printf("captured - dns - %v", host)
+			r.Hosts = append(r.Hosts, host)
+		}))
+		go ni.Listen()
+		defer ni.Terminate()
+	}
 
 	log.Printf("visiting with simple http client")
 	if hr, err := hc.Visit(h.VisitParams{
