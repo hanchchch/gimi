@@ -27,7 +27,7 @@ describe("AppController", () => {
   describe("Start", () => {
     it("should return id", async () => {
       const result = await controller.Start(
-        { url: "url" },
+        { url: "url", id: "id" },
         new Metadata(),
         /* @ts-ignore */
         {}

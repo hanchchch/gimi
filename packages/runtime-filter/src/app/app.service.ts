@@ -31,8 +31,7 @@ export class AppService {
   }
 
   async start(params: StartRequest): Promise<StartResponse> {
-    const { url } = params;
-    const id = randomUUID();
+    const { id, url } = params;
 
     await this.put({ requestId: id, args: { url } });
 

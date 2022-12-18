@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { randomUUID } from "crypto";
 import { firstValueFrom } from "rxjs";
 import { Repository } from "typeorm";
 import { Inspection } from "../inspection/inspection.entity";
@@ -27,11 +28,10 @@ export class InspectionService {
       return inspection;
     }
 
-    const { id } = await firstValueFrom(
-      this.runtimeFilterService.start({ url })
-    );
-
+    const id = randomUUID();
     const newInspection = this.inspectionRepository.create({ url, id });
+
+    await firstValueFrom(this.runtimeFilterService.start({ url, id }));
 
     await this.inspectionRepository.insert(newInspection);
 

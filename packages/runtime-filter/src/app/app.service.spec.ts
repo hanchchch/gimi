@@ -22,7 +22,7 @@ describe("AppService", () => {
 
   describe("start", () => {
     it("should return request id", async () => {
-      const result = await service.start({ url: "url" });
+      const result = await service.start({ id: "id", url: "url" });
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
     });

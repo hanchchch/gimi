@@ -5,6 +5,7 @@ import { InspectionResult } from "./inspection";
 export const protobufPackage = "runtimefilter";
 
 export interface StartRequest {
+  id: string;
   url: string;
 }
 
@@ -22,13 +23,16 @@ export interface GetResultResponse {
 }
 
 function createBaseStartRequest(): StartRequest {
-  return { url: "" };
+  return { id: "", url: "" };
 }
 
 export const StartRequest = {
   encode(message: StartRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
     if (message.url !== "") {
-      writer.uint32(10).string(message.url);
+      writer.uint32(18).string(message.url);
     }
     return writer;
   },
@@ -41,6 +45,9 @@ export const StartRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.id = reader.string();
+          break;
+        case 2:
           message.url = reader.string();
           break;
         default:
@@ -52,17 +59,19 @@ export const StartRequest = {
   },
 
   fromJSON(object: any): StartRequest {
-    return { url: isSet(object.url) ? String(object.url) : "" };
+    return { id: isSet(object.id) ? String(object.id) : "", url: isSet(object.url) ? String(object.url) : "" };
   },
 
   toJSON(message: StartRequest): unknown {
     const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
     message.url !== undefined && (obj.url = message.url);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<StartRequest>, I>>(object: I): StartRequest {
     const message = createBaseStartRequest();
+    message.id = object.id ?? "";
     message.url = object.url ?? "";
     return message;
   },

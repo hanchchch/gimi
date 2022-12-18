@@ -10,7 +10,8 @@ service RuntimeFilterService {
 }
 
 message StartRequest {
-  string url = 1;
+  string id = 1;
+  string url = 2;
 }
 
 message StartResponse {
